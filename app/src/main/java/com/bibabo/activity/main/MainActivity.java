@@ -18,7 +18,10 @@ import android.view.MenuItem;
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.TabEntity;
-import com.bibabo.fragment.main.MainFragment;
+import com.bibabo.fragment.learn.BabyLearnFragment;
+import com.bibabo.fragment.music.BabyMusicFragment;
+import com.bibabo.fragment.search.SearchFragment;
+import com.bibabo.fragment.watch.BabyWatchFragment;
 import com.bibabo.framework.BaseApplication;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
@@ -79,20 +82,21 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-
-        //两位数
-//        mTabLayout.showMsg(0, 55);
-//        mTabLayout.setMsgMargin(0, -5, 5);
         initViewPage();
+    }
+
+    private void openSearchFragment(int serviceId, String query) {
+        start(SearchFragment.newInstance());
     }
 
     private void initViewPage() {
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
-        for (String title : mTitles) {
-            mFragments.add(MainFragment.newInstance());
-        }
+        mFragments.add(BabyWatchFragment.newInstance());
+        mFragments.add(BabyMusicFragment.newInstance());
+        mFragments.add(BabyLearnFragment.newInstance());
+
         mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
 
         mTabLayout.setTabData(mTabEntities);
@@ -155,9 +159,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     @Override
     public void onBackPressedSupport() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        if (!(getTopFragment() instanceof MainFragment)) {
-            super.onBackPressedSupport();
-        } else if (drawer.isDrawerOpen(GravityCompat.START)) {
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
             drawer.closeDrawer(GravityCompat.START);
         } else if (System.currentTimeMillis() - exitTime > 2000) {
             PromptUtils.getInstance().showLongToast("再按一次退出程序");
@@ -171,7 +173,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.main, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
