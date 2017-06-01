@@ -3,6 +3,8 @@
 buildscript {
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
     dependencies {
         classpath 'com.android.tools.build:gradle:2.3.1'
@@ -15,8 +17,35 @@ buildscript {
 allprojects {
     repositories {
         jcenter()
+        mavenCentral()
+        maven { url 'https://jitpack.io' }
     }
 }
+
+ext {
+    minSdkVersion = 15
+    targetSdkVersion = 25
+    compileSdkVersion = 25
+    buildToolsVersion = "25.0.3"
+    versionCode = 1
+    versionName = "1.0.0"
+    sourceCompatibilityVersion = JavaVersion.VERSION_1_8
+    targetCompatibilityVersion = JavaVersion.VERSION_1_8
+}
+
+def supportLibraryVersion = '25.3.1'
+def butterKnifeLatestReleaseVersion = '8.4.0'
+
+ext.deps = [
+        multidex           : "com.android.support:multidex:1.0.1",
+        constraint         : 'com.android.support.constraint:constraint-layout:1.0.2',
+        appcompat          : "com.android.support:appcompat-v7:$supportLibraryVersion",
+        design             : "com.android.support:design:$supportLibraryVersion",
+        cardview           : "com.android.support:cardview-v7:$supportLibraryVersion",
+        gridlayout         : "com.android.support:gridlayout-v7:$supportLibraryVersion",
+        butterknife        : "com.jakewharton:butterknife:$butterKnifeLatestReleaseVersion",
+        butterknifeCompiler: "com.jakewharton:butterknife-compiler:$butterKnifeLatestReleaseVersion"
+]
 
 task clean(type: Delete) {
     delete rootProject.buildDir
