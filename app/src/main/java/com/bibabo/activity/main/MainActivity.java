@@ -4,8 +4,6 @@ import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -18,10 +16,6 @@ import android.view.MenuItem;
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.TabEntity;
-import com.bibabo.fragment.learn.BabyLearnFragment;
-import com.bibabo.fragment.music.BabyMusicFragment;
-import com.bibabo.fragment.search.SearchFragment;
-import com.bibabo.fragment.watch.BabyWatchFragment;
 import com.bibabo.framework.BaseApplication;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
@@ -37,8 +31,12 @@ import butterknife.BindView;
 public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresenter>
         implements MainContract.View, NavigationView.OnNavigationItemSelectedListener {
 
+    private static final String SINGLE_DAY_FRAGMENTS_TAGS = "single_day_fragments_tags";
+
+    private static final String CURRENT_SINGLE_DAY_FRAGMENT_POSITION = "current_single_day_fragments_position";
+
+
     private long exitTime = 0;
-    private ArrayList<Fragment> mFragments = new ArrayList<>();
     private String[] mTitles = {"宝宝看", "宝宝听", "宝宝学"};
 
     private int[] mIconSelectIds = {
@@ -50,6 +48,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
             R.mipmap.tab_contact_unselect};
 
     private ArrayList<CustomTabEntity> mTabEntities = new ArrayList<>();
+    private MainPageAdapter mMainPageAdapter;
 
     @BindView(R.id.vp_2)
     public ViewPager mViewPager;
@@ -82,23 +81,46 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
         NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
-        initViewPage();
+        initViewPage(savedInstanceState);
     }
 
-    private void openSearchFragment(int serviceId, String query) {
-        start(SearchFragment.newInstance());
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        if (mMainPageAdapter != null && mMainPageAdapter.getFragments() != null) {
+            Fragment[] singleDayFragments = mMainPageAdapter.getFragments();
+            String[] tags = new String[singleDayFragments.length];
+            for (int i = 0; i < tags.length; i++) {
+                tags[i] = singleDayFragments[i].getTag();
+            }
+            outState.putStringArray(SINGLE_DAY_FRAGMENTS_TAGS, tags);
+            outState.putInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION, mViewPager.getCurrentItem());
+        }
     }
 
-    private void initViewPage() {
+    private void initViewPage(Bundle savedInstanceState) {
+        String[] singleDayFragmentsTags = null;
+        int currentSingleDayFragment = 0;
+
+        if (savedInstanceState != null && savedInstanceState.containsKey(SINGLE_DAY_FRAGMENTS_TAGS)) {
+            singleDayFragmentsTags = savedInstanceState.getStringArray(SINGLE_DAY_FRAGMENTS_TAGS);
+        }
+        if (savedInstanceState != null && savedInstanceState.containsKey(CURRENT_SINGLE_DAY_FRAGMENT_POSITION)) {
+            currentSingleDayFragment =  savedInstanceState.getInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION);
+        }
+
+        setUpViewPagerForNarrowMode(singleDayFragmentsTags, currentSingleDayFragment);
+    }
+
+    private void setUpViewPagerForNarrowMode(String[] singleDayFragmentsTags, int currentSingleDayFragment) {
+        mMainPageAdapter = new MainPageAdapter(getContext(), this.getSupportFragmentManager());
+        mMainPageAdapter.setRetainedFragmentsTags(singleDayFragmentsTags);
+        mViewPager.setAdapter(mMainPageAdapter);
+        mViewPager.setCurrentItem(currentSingleDayFragment);
+
         for (int i = 0; i < mTitles.length; i++) {
             mTabEntities.add(new TabEntity(mTitles[i], mIconSelectIds[i], mIconUnselectIds[i]));
         }
-        mFragments.add(BabyWatchFragment.newInstance());
-        mFragments.add(BabyMusicFragment.newInstance());
-        mFragments.add(BabyLearnFragment.newInstance());
-
-        mViewPager.setAdapter(new MyPagerAdapter(getSupportFragmentManager()));
-
         mTabLayout.setTabData(mTabEntities);
         mTabLayout.setOnTabSelectListener(new OnTabSelectListener() {
             @Override
@@ -109,7 +131,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
             @Override
             public void onTabReselect(int position) {
                 if (position == 0) {
-                    mTabLayout.showMsg(0, 1);
+//                    mTabLayout.showMsg(0, 1);
 //                    UnreadMsgUtils.show(mTabLayout_2.getMsgView(0), mRandom.nextInt(100) + 1);
                 }
             }
@@ -131,29 +153,9 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
             }
         });
-
-        mViewPager.setCurrentItem(1);
-    }
-
-    private class MyPagerAdapter extends FragmentPagerAdapter {
-        public MyPagerAdapter(FragmentManager fm) {
-            super(fm);
-        }
-
-        @Override
-        public int getCount() {
-            return mFragments.size();
-        }
-
-        @Override
-        public CharSequence getPageTitle(int position) {
-            return mTitles[position];
-        }
-
-        @Override
-        public Fragment getItem(int position) {
-            return mFragments.get(position);
-        }
+        mViewPager.setPageMargin(getResources()
+                .getDimensionPixelSize(R.dimen.padding_normal));
+        mViewPager.setPageMarginDrawable(R.drawable.page_margin);
     }
 
     @Override
