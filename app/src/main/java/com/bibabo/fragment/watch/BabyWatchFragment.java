@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseViewPagerFragment;
-import com.bibabo.fragment.BabyWatchItemFragment;
+import com.bibabo.fragment.watch.child.BabyWatchItemFragment;
 
 /**
  * 宝宝看
@@ -39,7 +39,7 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     @Override
     protected void setCategoryTitles() {
         categoryNames = new String[]{
-                "精选","动画"
+                "故事","动画片"
         };
     }
 

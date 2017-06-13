@@ -5,13 +5,21 @@ import android.os.Environment;
 import android.os.Handler;
 import android.os.StrictMode;
 
+import com.bibabo.framework.config.ShowConfig;
+import com.bibabo.framework.exception.ExceptionReporter;
+import com.bibabo.framework.exception.ExceptionSendActivity;
 import com.bibabo.framework.utils.AppManager;
+import com.bibabo.framework.utils.DisplayUtils;
+import com.bibabo.framework.utils.EnvironmentUtils;
+import com.bibabo.framework.utils.LogUtils;
+import com.bibabo.framework.utils.SDKVersionUtils;
 
 import io.reactivex.plugins.RxJavaPlugins;
 
 import static com.bibabo.framework.exception.ErrorHandler.errorConsumer;
 
 /**
+ *
  * Created by zijian.cheng on 2017/6/1.
  */
 public abstract class BaseApplication extends Application {
@@ -31,29 +39,29 @@ public abstract class BaseApplication extends Application {
         super.onCreate();
         sApplication = this;
 
-//        if (EnvironmentUtils.Config.isTestMode() && SDKVersionUtils.hasHoneycomb()) {
-//            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-//            builder.detectLeakedSqlLiteObjects()
-//                    .penaltyLog()
-//                    .penaltyDeath();
-//            builder.detectLeakedClosableObjects();
-//            StrictMode.setVmPolicy(builder.build());
-//        }
-//        EnvironmentUtils.init(this);
-//
-//        DisplayUtils.init(this);
-//        Preferences.init(this);
-//
-//        ShowConfig.init(this);
-//
-//        Cache.open(this);
-//
-//        LogUtils.setEnable(EnvironmentUtils.Config.isLogEnable());
-//        //设置LogUtils log日志路目录路径
-//        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
-//        LogUtils.setLogFileFolder(path);
-//        LogUtils.setWriteToFile(EnvironmentUtils.Config.isLogEnable());
-//
+        EnvironmentUtils.init(this);
+        if (EnvironmentUtils.Config.isTestMode() && SDKVersionUtils.hasHoneycomb()) {
+            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
+            builder.detectLeakedSqlLiteObjects()
+                    .penaltyLog()
+                    .penaltyDeath();
+            builder.detectLeakedClosableObjects();
+            StrictMode.setVmPolicy(builder.build());
+        }
+
+        DisplayUtils.init(this);
+        //Preferences.init(this);
+
+        ShowConfig.init(this);
+
+        //Cache.open(this);
+
+        LogUtils.setEnable(EnvironmentUtils.Config.isLogEnable());
+        //设置LogUtils log日志路目录路径
+        String path = Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS).getPath();
+        LogUtils.setLogFileFolder(path);
+        LogUtils.setWriteToFile(EnvironmentUtils.Config.isLogEnable());
+
 //        StorageUtils.initSqlite(this, new Class[]{TaskInfo.class}, ShowConfig.DB_NAME, ShowConfig.DB_VERSION_V_1_6,
 //                new SqliteStorageImpl.Callback() {
 //                    @Override
@@ -63,12 +71,12 @@ public abstract class BaseApplication extends Application {
 //                        }
 //                    }
 //                });
-//
+
 //        ModuleManager.instance().init();
-//
-//        ExceptionReporter.init(this, ExceptionSendActivity.ACTION_EXCEPTION_SEND);
-//
-//        Preferences.edit().remove(SharedPreferenceKey.WIFI_TIP_DONE).apply();
+
+        ExceptionReporter.init(this, ExceptionSendActivity.ACTION_EXCEPTION_SEND);
+
+        //Preferences.edit().remove(SharedPreferenceKey.WIFI_TIP_DONE).apply();
 
         RxJavaPlugins.setErrorHandler(errorConsumer(this));
     }

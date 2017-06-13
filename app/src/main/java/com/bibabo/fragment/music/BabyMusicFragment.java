@@ -9,7 +9,7 @@ import android.view.View;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseViewPagerFragment;
-import com.bibabo.fragment.BabyWatchItemFragment;
+import com.bibabo.fragment.watch.child.BabyWatchItemFragment;
 
 /**
  *

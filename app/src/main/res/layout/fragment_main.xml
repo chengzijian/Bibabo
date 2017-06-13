@@ -16,7 +16,7 @@
             android:id="@+id/id_top_tab_layout"
             android:layout_width="match_parent"
             android:layout_height="48dp"
-            android:background="@color/navigation"
+            android:background="#cacaca"
             app:tl_indicator_corner_radius="1.5dp"
             app:tl_indicator_height="3dp"
             app:tl_indicator_width="10dp" />
