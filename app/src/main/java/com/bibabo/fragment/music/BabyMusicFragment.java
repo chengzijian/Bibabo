@@ -49,7 +49,7 @@ public class BabyMusicFragment extends MVPBaseViewPagerFragment<BabyMusicContrac
         switch (position) {
             case 0:
             default:
-                frag = BabyWatchItemFragment.newInstance("BabyMusicFragment:"+position);
+                frag = BabyWatchItemFragment.newInstance("");
                 break;
         }
         return frag;

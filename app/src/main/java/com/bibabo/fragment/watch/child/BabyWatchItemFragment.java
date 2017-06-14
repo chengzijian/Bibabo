@@ -8,21 +8,25 @@ import android.view.View;
 import com.bibabo.R;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseFragment;
+import com.bibabo.entity.MainListDto;
+import com.bibabo.framework.utils.StringUtils;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
+ *
  * Created by zijian.cheng on 2017/6/1.
  */
 public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContract.View
-        , BabyWatchItemPresenter, String>
-        implements BabyWatchItemContract.View {
+        , BabyWatchItemPresenter, MainListDto> implements BabyWatchItemContract.View {
 
-    public static BabyWatchItemFragment newInstance(String str) {
+    private String httpUrl;
+
+    public static BabyWatchItemFragment newInstance(String url) {
         Bundle args = new Bundle();
         BabyWatchItemFragment fragment = new BabyWatchItemFragment();
-        args.putString("str", str);
+        args.putString("url", url);
         fragment.setArguments(args);
         return fragment;
     }
@@ -33,31 +37,26 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
     }
 
     @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-        String str = getArguments().getString("str");
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        httpUrl = getArguments().getString("url");
     }
 
     @NonNull
     @Override
-    public BaseRecyclerListAdapter<String, ?> createAdapter() {
+    public BaseRecyclerListAdapter<MainListDto, ?> createAdapter() {
         return new BabyWatchItemAdapter();
     }
 
     @Override
     protected void loadData() {
-        List<String> items = new ArrayList<>();
-        for (int i = 0; i < 100; i++) {
-            items.add("this is :" + i);
+        if(!StringUtils.isEmpty(httpUrl)){
+            presenter.fetchList(httpUrl);
         }
-        setRefresh(false);
-        notifyLoadingFinished();
-
-
-        updateCurrentList(items);
     }
 
-    public void updateCurrentList(List<String> items) {
+    @Override
+    public void updateCurrentList(List<MainListDto> items) {
         updateList(items);
         updateViewState();
     }

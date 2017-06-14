@@ -49,7 +49,7 @@ public class BabyLearnFragment extends MVPBaseViewPagerFragment<BabyLearnContrac
         switch (position) {
             case 0:
             default:
-                frag = BabyWatchItemFragment.newInstance("BabyLearnFragment:"+position);
+                frag = BabyWatchItemFragment.newInstance("");
                 break;
         }
         return frag;
