@@ -68,6 +68,7 @@ public abstract class ListBaseFragment<V extends ListBaseView, T extends ListBas
 
     private AtomicInteger loadingCount;
     private boolean isEnd;
+    private int page;
 
     protected boolean clear = true;
 
@@ -158,6 +159,15 @@ public abstract class ListBaseFragment<V extends ListBaseView, T extends ListBas
 
     public boolean isEnd() {
         return isEnd;
+    }
+
+    @Override
+    public void setCurrPage(int page) {
+        this.page = page;
+    }
+
+    public int getNextPage() {
+        return page + 1;
     }
 
     protected void setSwipeToRefreshEnabled(boolean enable) {

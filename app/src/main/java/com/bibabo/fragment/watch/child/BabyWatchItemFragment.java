@@ -3,7 +3,8 @@ package com.bibabo.fragment.watch.child;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
-import android.view.View;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.RecyclerView;
 
 import com.bibabo.R;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
@@ -11,7 +12,6 @@ import com.bibabo.base.list.ListBaseFragment;
 import com.bibabo.entity.MainListDto;
 import com.bibabo.framework.utils.StringUtils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -49,9 +49,14 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
     }
 
     @Override
+    public RecyclerView.LayoutManager createLayoutManager() {
+        return new GridLayoutManager(getContext(), 2);
+    }
+
+    @Override
     protected void loadData() {
         if(!StringUtils.isEmpty(httpUrl)){
-            presenter.fetchList(httpUrl);
+            presenter.fetchList(String.format(httpUrl, clear ? 1 : getNextPage()));
         }
     }
 
@@ -60,4 +65,5 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
         updateList(items);
         updateViewState();
     }
+
 }

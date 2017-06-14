@@ -28,6 +28,8 @@ public interface ListBaseView extends BaseView {
 
     void setEnd(boolean end);
 
+    void setCurrPage(int page);
+
     void setRefresh(boolean refresh);
 
     void notifyLoadingStarted();

@@ -60,4 +60,5 @@ dependencies {
     compile deps.constraint
     compile deps.design
     compile deps.gridlayout
+    compile deps.cardview
 }

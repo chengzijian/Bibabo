@@ -6,6 +6,7 @@ import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
 
 /**
+ *
  * Created by zijian.cheng on 2017/6/13.
  */
 
@@ -17,7 +18,9 @@ public class BabyWatchItemAdapter extends BaseRecyclerListAdapter<MainListDto, V
     }
 
     @Override
-    protected void convert(ViewHolder holder, MainListDto s, int position) {
-        holder.setText(R.id.id_text_view, s.getName());
+    protected void convert(ViewHolder holder, MainListDto item, int position) {
+        holder.setImageByUrl(R.id.id_image_view, item.getPic());
+        holder.setText(R.id.id_text_view, item.getName());
+        holder.setText(R.id.id_click_number, String.format("播放量：%s", item.getClicknumber()));
     }
 }

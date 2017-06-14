@@ -7,15 +7,12 @@ import com.bibabo.api.ApiException;
 import com.bibabo.api.CacheProviders;
 import com.bibabo.api.RetrofitUtils;
 import com.bibabo.entity.HttpResult;
-import com.bibabo.entity.MainListDto;
 import com.bibabo.resolver.MainInfoHtmlOnSubscribe;
 
 import java.io.File;
-import java.util.List;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
-import io.reactivex.FlowableTransformer;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Function;
 import io.rx_cache2.DynamicKey;
@@ -86,10 +83,9 @@ public class HttpData {
 //                .subscribe(observer);
 //    }
 //
-    public <T> Flowable<T> getMainList(String path) {
-        Flowable<T> observable = Flowable.create(new MainInfoHtmlOnSubscribe<T>(path), BackpressureStrategy.BUFFER);
-        return providers.fetchList(observable, new DynamicKey(path), new EvictDynamicKey(false))
-                .map(new HttpResultFuncCcche<T>());
+    public Flowable getMainList(String path) {
+        Flowable observable = Flowable.create(new MainInfoHtmlOnSubscribe(path), BackpressureStrategy.BUFFER);
+        return providers.getCacheData(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
 //    public void getMainList(String path, Observer<List<MainListDto>> observer) {
 //        Observable observable = service.fetchList(path).map(new HttpResultFunc<List<MainListDto>>());

@@ -21,4 +21,16 @@ public class MainListDto implements Serializable {
     public String getName() {
         return name;
     }
+
+    public String getClicknumber() {
+        return clicknumber;
+    }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public String getLink() {
+        return link;
+    }
 }

@@ -48,7 +48,7 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
         Fragment frag = new Fragment();
         switch (position) {
             case 0:
-                frag = BabyWatchItemFragment.newInstance("story-c701.html");
+                frag = BabyWatchItemFragment.newInstance("story-c701-s2-p%d.html");
                 break;
             default:
                 break;

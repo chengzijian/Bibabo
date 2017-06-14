@@ -1,12 +1,8 @@
 package com.bibabo.api;
 
-import com.bibabo.entity.MainListDto;
-
-import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import io.reactivex.Flowable;
-import io.reactivex.Observable;
 import io.rx_cache2.DynamicKey;
 import io.rx_cache2.EvictDynamicKey;
 import io.rx_cache2.LifeCache;
@@ -14,7 +10,8 @@ import io.rx_cache2.Reply;
 
 /**
  * 缓存API接口
- * @LifeCache设置缓存过期时间. 如果没有设置@LifeCache , 数据将被永久缓存理除非你使用了 EvictProvider, EvictDynamicKey or EvictDynamicKeyGroup .
+ * @LifeCache设置缓存过期时间.
+ * 如果没有设置@LifeCache , 数据将被永久缓存理除非你使用了 EvictProvider, EvictDynamicKey or EvictDynamicKeyGroup .
  * EvictProvider可以明确地清理清理所有缓存数据.
  * EvictDynamicKey可以明确地清理指定的数据 DynamicKey.
  * EvictDynamicKeyGroup 允许明确地清理一组特定的数据. DynamicKeyGroup.
@@ -25,7 +22,7 @@ public interface CacheProviders {
 
     //缓存时间 3天
     @LifeCache(duration = 3, timeUnit = TimeUnit.DAYS)
-    <T> Flowable<Reply<T>> fetchList(Flowable<T> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
+    <T> Flowable<Reply<T>> getCacheData(Flowable<T> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
 
 //    //获取书库分类信息缓存数据 缓存时间 永久
 //    Observable<Reply<List<BookTypeDto>>> getTypeList(Observable<List<BookTypeDto>> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);

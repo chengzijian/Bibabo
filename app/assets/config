@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<config_parameter>
+    <!-- 程序的版本信息 -->
+
+    <string value="app_version">0.0.1.20170517001</string>
+
+    <!-- 版本的名字，内测版, 公测版, 正式版 -->
+    <string value="version_name">内测版</string>
+
+    <!-- 是否打印交互地址 -->
+	<string value="url_print_enable">true</string>
+
+    <!-- 是否打开测试开关，打开测试开关会出现测试功能 -->
+    <string value="test_mode">true</string>
+
+    <!-- 是否打开程序log功能 -->
+    <string value="log_enable">true</string>
+
+</config_parameter>
