@@ -87,15 +87,15 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mMainPageAdapter != null && mMainPageAdapter.getFragments() != null) {
-            Fragment[] singleDayFragments = mMainPageAdapter.getFragments();
-            String[] tags = new String[singleDayFragments.length];
-            for (int i = 0; i < tags.length; i++) {
-                tags[i] = singleDayFragments[i].getTag();
-            }
-            outState.putStringArray(SINGLE_DAY_FRAGMENTS_TAGS, tags);
-            outState.putInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION, mViewPager.getCurrentItem());
-        }
+//        if (mMainPageAdapter != null && mMainPageAdapter.getFragments() != null) {
+//            Fragment[] singleDayFragments = mMainPageAdapter.getFragments();
+//            String[] tags = new String[singleDayFragments.length];
+//            for (int i = 0; i < tags.length; i++) {
+//                tags[i] = singleDayFragments[i].getTag();
+//            }
+//            outState.putStringArray(SINGLE_DAY_FRAGMENTS_TAGS, tags);
+//            outState.putInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION, mViewPager.getCurrentItem());
+//        }
     }
 
     private void initViewPage(Bundle savedInstanceState) {

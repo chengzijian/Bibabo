@@ -1,15 +1,10 @@
 package com.bibabo.httpdata;
 
-import android.os.Environment;
-
-import com.bibabo.api.APIService;
 import com.bibabo.api.ApiException;
 import com.bibabo.api.CacheProviders;
-import com.bibabo.api.RetrofitUtils;
 import com.bibabo.entity.HttpResult;
+import com.bibabo.framework.BaseApplication;
 import com.bibabo.resolver.MainInfoHtmlOnSubscribe;
-
-import java.io.File;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -26,21 +21,25 @@ import io.victoralbertos.jolyglot.GsonSpeaker;
  * Created by zijian.cheng on 2017/6/14.
  */
 public class HttpData {
+    //    protected static final APIService service = RetrofitUtils.api();
+    private final CacheProviders providers;
+    static volatile HttpData defaultInstance;
 
-    private static File cacheDirectory = Environment.getExternalStorageDirectory();
-    private static final CacheProviders providers = new RxCache.Builder()
-            .persistence(cacheDirectory, new GsonSpeaker())
-            .using(CacheProviders.class);
-    protected static final APIService service = RetrofitUtils.api();
-
-    //在访问HttpMethods时创建单例
-    private static class SingletonHolder {
-        private static final HttpData INSTANCE = new HttpData();
+    public static HttpData getDefault() {
+        if (defaultInstance == null) {
+            synchronized (HttpData.class) {
+                if (defaultInstance == null) {
+                    defaultInstance = new HttpData();
+                }
+            }
+        }
+        return defaultInstance;
     }
 
-    //获取单例
-    public static HttpData getInstance() {
-        return SingletonHolder.INSTANCE;
+    private HttpData() {
+        providers = new RxCache.Builder()
+                .persistence(BaseApplication.getApplication().getCacheDir(), new GsonSpeaker())
+                .using(CacheProviders.class);
     }
 
     /**
@@ -87,6 +86,7 @@ public class HttpData {
         Flowable observable = Flowable.create(new MainInfoHtmlOnSubscribe(path), BackpressureStrategy.BUFFER);
         return providers.getCacheData(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
+
 //    public void getMainList(String path, Observer<List<MainListDto>> observer) {
 //        Observable observable = service.fetchList(path).map(new HttpResultFunc<List<MainListDto>>());
 //        Observable observableCahce = providers.fetchList(observable, new DynamicKey("书本类别"), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<List<MainListDto>>());

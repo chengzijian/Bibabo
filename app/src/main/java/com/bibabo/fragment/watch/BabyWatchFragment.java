@@ -25,7 +25,7 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
         fragment.setArguments(args);
         return fragment;
     }
-    
+
     @Override
     protected int provideViewLayoutId() {
         return R.layout.fragment_main;
@@ -39,21 +39,33 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     @Override
     protected void setCategoryTitles() {
         categoryNames = new String[]{
-                "故事","动画片"
+                "儿歌", "故事", "唐诗", "名人故事", "成语故事", "好性格", "乐乐讲故事"
+                , "胎教故事", "英文故事", "新年故事", "冬季温暖故事", "圣诞故事"
+                , "睡前故事", "益智童话故事", "安徒生童话", "格林童话"
+        };
+        categoryLinks = new String[]{
+                "erge-c715-s2-p%d.html",
+                "story-c701-s2-p%d.html",
+                "poetry-c703-p%d.html",
+                "story-c13-s0-p%d.html",
+                "story-c12-s2-p%d.html",
+                "story-t1183-s1-p%d.html",
+                "story-t2941-s1-p%d.html",
+                "story-t2311.html",
+                "story-t2310.html",
+                "story-t2298.html",
+                "story-t2221.html",
+                "story-t2206.html",
+                "story-t1627.html",
+                "story-t800.html",
+                "story-c46.html",
+                "story-c49.html"
         };
     }
 
     @Override
     protected Fragment getFragment(int position) {
-        Fragment frag = new Fragment();
-        switch (position) {
-            case 0:
-                frag = BabyWatchItemFragment.newInstance("story-c701-s2-p%d.html");
-                break;
-            default:
-                break;
-        }
-        return frag;
+        return BabyWatchItemFragment.newInstance(categoryLinks[position]);
     }
 
     @Override

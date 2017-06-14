@@ -18,7 +18,7 @@ public class BabyWatchItemPresenter extends ListBasePresenterImpl<BabyWatchItemC
 
     @Override
     public void fetchList(String httpUrl) {
-        HttpData.getInstance().getMainList(httpUrl)
+        HttpData.getDefault().getMainList(httpUrl)
                 .compose(view.<MainListResult>bindToLife())
                 .compose(applyCommonOperators())
                 .subscribe(new Consumer<DataListResult<MainListDto>>() {

@@ -35,19 +35,20 @@ public abstract class BaseViewPagerFragment extends BaseFragment {
 
     private ChildViewPageAdapter mViewPagerAdapter;
     protected String[] categoryNames;
+    protected String[] categoryLinks;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        if (mViewPagerAdapter != null && mViewPagerAdapter.getFragments() != null) {
-            Fragment[] singleDayFragments = mViewPagerAdapter.getFragments();
-            String[] tags = new String[singleDayFragments.length];
-            for (int i = 0; i < tags.length; i++) {
-                tags[i] = singleDayFragments[i].getTag();
-            }
-            outState.putStringArray(SINGLE_DAY_FRAGMENTS_TAGS, tags);
-            outState.putInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION, mViewPager.getCurrentItem());
-        }
+//        if (mViewPagerAdapter != null && mViewPagerAdapter.getFragments() != null) {
+//            Fragment[] singleDayFragments = mViewPagerAdapter.getFragments();
+//            String[] tags = new String[singleDayFragments.length];
+//            for (int i = 0; i < tags.length; i++) {
+//                tags[i] = singleDayFragments[i].getTag();
+//            }
+//            outState.putStringArray(SINGLE_DAY_FRAGMENTS_TAGS, tags);
+//            outState.putInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION, mViewPager.getCurrentItem());
+//        }
     }
 
     @Override
