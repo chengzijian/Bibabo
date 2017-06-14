@@ -51,15 +51,15 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
                 "story-c12-s2-p%d.html",
                 "story-t1183-s1-p%d.html",
                 "story-t2941-s1-p%d.html",
-                "story-t2311.html",
-                "story-t2310.html",
-                "story-t2298.html",
-                "story-t2221.html",
-                "story-t2206.html",
-                "story-t1627.html",
-                "story-t800.html",
-                "story-c46.html",
-                "story-c49.html"
+                "story-t2311-s1-p%d.html",
+                "story-t2310-s1-p%d.html",
+                "story-t2298-s1-p%d.html",
+                "story-t2221-s1-p%d.html",
+                "story-t2206-s1-p%d.html",
+                "story-t1627-s1-p%d.html",
+                "story-t800-s1-p%d.html",
+                "story-c46-s1-p%d.html",
+                "story-c49-s1-p%d.html"
         };
     }
 

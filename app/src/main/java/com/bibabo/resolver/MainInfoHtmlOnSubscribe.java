@@ -4,6 +4,7 @@ import com.bibabo.api.ApiException;
 import com.bibabo.api.Constant;
 import com.bibabo.entity.MainListDto;
 import com.bibabo.entity.MainListResult;
+import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.StringUtils;
 
 import org.jsoup.Jsoup;
@@ -11,7 +12,6 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -30,7 +30,8 @@ public class MainInfoHtmlOnSubscribe<T> implements FlowableOnSubscribe<T> {
     public void subscribe(FlowableEmitter<T> subscriber) throws Exception {
         try {
             //开始疯狂的数据抓取啦 不解释了 看文档  http://www.open-open.com/jsoup/
-            Document doc = Jsoup.connect(url).timeout(15000).get();
+            LogUtils.e("MainInfoHtmlOnSubscribe>", url);
+            Document doc = Jsoup.connect(url).get();
             Elements list = doc.select("div.HotMainbox").first().getElementsByTag("li");
             List<MainListDto> dataList = null;
             int size = list.size();
@@ -68,7 +69,7 @@ public class MainInfoHtmlOnSubscribe<T> implements FlowableOnSubscribe<T> {
             T bookInfoDto = (T) result;
             subscriber.onNext(bookInfoDto);
             subscriber.onComplete();
-        } catch (IOException e) {
+        } catch (Exception e) {
             throw new ApiException("ERROR:数据解析错误");
         }
     }
