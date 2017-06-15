@@ -47,7 +47,7 @@ public class RetrofitUtils {
     private RetrofitUtils() {
         if (null == mRetrofit) {
             if (null == mOkHttpClient) {
-                mOkHttpClient = OkHttp3Utils.getOkHttpClient();
+                mOkHttpClient = OkHttp3Utils.getDefault().getOkHttpClient();
             }
             //Retrofit2后使用build设计模式
             mRetrofit = new Retrofit.Builder()
