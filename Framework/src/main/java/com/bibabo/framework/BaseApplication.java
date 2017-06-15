@@ -12,12 +12,10 @@ import com.bibabo.framework.utils.AppManager;
 import com.bibabo.framework.utils.DisplayUtils;
 import com.bibabo.framework.utils.EnvironmentUtils;
 import com.bibabo.framework.utils.LogUtils;
-import com.bibabo.framework.utils.SDKVersionUtils;
 
 import io.reactivex.plugins.RxJavaPlugins;
 
 import static com.bibabo.framework.exception.ErrorHandler.errorConsumer;
-
 /**
  *
  * Created by zijian.cheng on 2017/6/1.
@@ -38,16 +36,20 @@ public abstract class BaseApplication extends Application {
     public void onCreate() {
         super.onCreate();
         sApplication = this;
-
         EnvironmentUtils.init(this);
-        if (EnvironmentUtils.Config.isTestMode() && SDKVersionUtils.hasHoneycomb()) {
-            StrictMode.VmPolicy.Builder builder = new StrictMode.VmPolicy.Builder();
-            builder.detectLeakedSqlLiteObjects()
-                    .penaltyLog()
-                    .penaltyDeath();
-            builder.detectLeakedClosableObjects();
-            StrictMode.setVmPolicy(builder.build());
-        }
+
+        StrictMode.setThreadPolicy(
+                new StrictMode.ThreadPolicy.Builder()
+                        .detectDiskReads()
+                        .detectDiskWrites()
+                        .detectNetwork()
+                        .penaltyLog()
+                        .build());
+        StrictMode.setVmPolicy(
+                new StrictMode.VmPolicy.Builder()
+                        .detectLeakedSqlLiteObjects()
+                        .penaltyLog()
+                        .build());
 
         DisplayUtils.init(this);
         //Preferences.init(this);
