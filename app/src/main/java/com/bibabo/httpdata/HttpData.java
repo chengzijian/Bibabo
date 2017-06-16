@@ -4,6 +4,7 @@ import com.bibabo.api.ApiException;
 import com.bibabo.api.CacheProviders;
 import com.bibabo.entity.HttpResult;
 import com.bibabo.framework.BaseApplication;
+import com.bibabo.resolver.FetchVideoUrlOnSubscribe;
 import com.bibabo.resolver.MainInfoHtmlOnSubscribe;
 
 import io.reactivex.BackpressureStrategy;
@@ -84,6 +85,15 @@ public class HttpData {
 //
     public Flowable getMainList(String path) {
         Flowable observable = Flowable.create(new MainInfoHtmlOnSubscribe(path), BackpressureStrategy.BUFFER);
+        return providers.getCacheData(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
+    }
+
+    /**
+     * 得到播放地址
+     * @return
+     */
+    public Flowable fetchVideoUrl(String path) {
+        Flowable observable = Flowable.create(new FetchVideoUrlOnSubscribe(path), BackpressureStrategy.BUFFER);
         return providers.getCacheData(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
 

@@ -5,11 +5,14 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.view.View;
 
 import com.bibabo.R;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseFragment;
+import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
+import com.bibabo.fragment.watch.player.BabyVideoDetailActivity;
 import com.bibabo.framework.utils.StringUtils;
 
 import java.util.List;
@@ -51,6 +54,22 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
     @Override
     public RecyclerView.LayoutManager createLayoutManager() {
         return new GridLayoutManager(getContext(), 2);
+    }
+
+    @Override
+    protected BaseRecyclerListAdapter.OnItemClickListener getOnItemClickListener() {
+        return new BaseRecyclerListAdapter.OnItemClickListener<ViewHolder, MainListDto>() {
+
+            @Override
+            public void onItemClick(View view, ViewHolder holder, MainListDto data) {
+                BabyVideoDetailActivity.launch(getContext(), data.getLink());
+            }
+
+            @Override
+            public boolean onItemLongClick(View view, ViewHolder holder, MainListDto data) {
+                return false;
+            }
+        };
     }
 
     @Override

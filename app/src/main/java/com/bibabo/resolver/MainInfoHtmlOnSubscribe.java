@@ -19,6 +19,10 @@ import java.util.List;
 import io.reactivex.FlowableEmitter;
 import io.reactivex.FlowableOnSubscribe;
 
+/**
+ * 通过URl获取有伴网播放列表
+ * @param <T>
+ */
 public class MainInfoHtmlOnSubscribe<T> implements FlowableOnSubscribe<T> {
     private String url;
 

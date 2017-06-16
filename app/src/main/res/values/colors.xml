@@ -6,4 +6,5 @@
     <color name="navigation">#62646C</color>
 
     <color name="background">#FAFAFA</color>
+    <color name="track_header_tint">#20ffffff</color>
 </resources>

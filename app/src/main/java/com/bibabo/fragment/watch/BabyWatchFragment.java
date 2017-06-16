@@ -39,27 +39,19 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     @Override
     protected void setCategoryTitles() {
         categoryNames = new String[]{
-                "儿歌", "故事", "唐诗", "名人故事", "成语故事", "好性格", "乐乐讲故事"
-                , "胎教故事", "英文故事", "新年故事", "冬季温暖故事", "圣诞故事"
-                , "睡前故事", "益智童话故事", "安徒生童话", "格林童话"
+                "儿歌", "故事", "成语故事", "好性格", "胎教故事"
+                , "新年故事", "冬季温暖故事", "睡前故事", "益智童话故事"
         };
         categoryLinks = new String[]{
                 "erge-c715-s2-p%d.html",
                 "story-c701-s2-p%d.html",
-                "poetry-c703-p%d.html",
-                "story-c13-s0-p%d.html",
                 "story-c12-s2-p%d.html",
                 "story-t1183-s1-p%d.html",
-                "story-t2941-s1-p%d.html",
                 "story-t2311-s1-p%d.html",
-                "story-t2310-s1-p%d.html",
                 "story-t2298-s1-p%d.html",
                 "story-t2221-s1-p%d.html",
-                "story-t2206-s1-p%d.html",
                 "story-t1627-s1-p%d.html",
-                "story-t800-s1-p%d.html",
-                "story-c46-s1-p%d.html",
-                "story-c49-s1-p%d.html"
+                "story-t800-s1-p%d.html"
         };
     }
 
