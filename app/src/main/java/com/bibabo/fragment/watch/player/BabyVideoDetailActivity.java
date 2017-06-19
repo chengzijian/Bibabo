@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.ImageView;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
@@ -18,15 +19,21 @@ import com.bibabo.entity.MainListDto;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.utils.StringUtils;
+import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
+import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
+import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
-import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
 /**
+ *
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
@@ -38,7 +45,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     RecyclerView mRecyclerView;
 
     @BindView(R.id.detail_player)
-    ListGSYVideoPlayer detailPlayer;
+    DefaultVideoPlayer detailPlayer;
 
     private VideoListAdapter mAdapter;
     private boolean isPlay;
@@ -82,20 +89,32 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     private void initPlayerVideo() {
-
         //增加封面
-//        ImageView imageView = new ImageView(this);
-//        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-//        imageView.setImageResource(R.mipmap.xxx1);
-//        detailPlayer.setThumbImageView(imageView);
+        ImageView imageView = new ImageView(this);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        imageView.setImageResource(R.mipmap.ic_launcher);
+        detailPlayer.setThumbImageView(imageView);
 
         resolveNormalVideoUI();
+
+        //设置返回键
+        detailPlayer.getBackButton().setVisibility(View.VISIBLE);
+        //设置返回按键功能
+        detailPlayer.getBackButton().setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                onBackPressedSupport();
+            }
+        });
+
+        //画面比例 全屏
+        GSYVideoType.setShowType(GSYVideoType.SCREEN_TYPE_FULL);
 
         //外部辅助的旋转，帮助全屏
         orientationUtils = new OrientationUtils(this, detailPlayer);
         //初始化不打开外部的旋转
         orientationUtils.setEnable(false);
-
+        //是否可以滑动调整
         detailPlayer.setIsTouchWiget(true);
         //关闭自动旋转
         detailPlayer.setRotateViewAuto(false);
@@ -208,9 +227,8 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     private void resolveNormalVideoUI() {
         //增加title
-        detailPlayer.getTitleTextView().setVisibility(View.GONE);
+        detailPlayer.getTitleTextView().setVisibility(View.VISIBLE);
         detailPlayer.getTitleTextView().setText("测试视频");
-        detailPlayer.getBackButton().setVisibility(View.GONE);
     }
 
     @Override
@@ -220,13 +238,11 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     @Override
     public void playVideo(String url) {
-//        List<GSYVideoModel> urls = new ArrayList<>();
-//        urls.add(new GSYVideoModel("http://baobab.wdjcdn.com/14564977406580.mp4", "标题1"));
-//        urls.add(new GSYVideoModel("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4", "标题2"));
-//        urls.add(new GSYVideoModel("http://baobab.wdjcdn.com/14564977406580.mp4", "标题3"));
-//        urls.add(new GSYVideoModel("http://9890.vod.myqcloud.com/9890_4e292f9a3dd011e6b4078980237cc3d3.f20.mp4", "标题4"));
-//        detailPlayer.setUp(urls, true, 0, "");
-        detailPlayer.setUp(url, false, null, "加载成功");
+        List<GSYVideoModel> urls = new ArrayList<>();
+        urls.add(new GSYVideoModel(url, "标题01"));
+        urls.add(new GSYVideoModel(url, "标题02"));
+        urls.add(new GSYVideoModel(url, "标题03"));
+        detailPlayer.setUp(urls, 0);
     }
 
     @Override
