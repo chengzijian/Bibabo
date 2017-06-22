@@ -24,6 +24,10 @@ public interface CacheProviders {
     @LifeCache(duration = 3, timeUnit = TimeUnit.DAYS)
     <T> Flowable<Reply<T>> getCacheData(Flowable<T> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
 
+    //缓存时间 4小时
+    @LifeCache(duration = 4, timeUnit = TimeUnit.HOURS)
+    <T> Flowable<Reply<T>> getCacheDataHours(Flowable<T> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
+
 //    //获取书库分类信息缓存数据 缓存时间 永久
 //    Observable<Reply<List<BookTypeDto>>> getTypeList(Observable<List<BookTypeDto>> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
 //

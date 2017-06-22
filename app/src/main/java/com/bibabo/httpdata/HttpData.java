@@ -6,6 +6,7 @@ import com.bibabo.entity.HttpResult;
 import com.bibabo.framework.BaseApplication;
 import com.bibabo.resolver.FetchVideoUrlOnSubscribe;
 import com.bibabo.resolver.MainInfoHtmlOnSubscribe;
+import com.bibabo.resolver.QQVideoOnSubscribe;
 
 import io.reactivex.BackpressureStrategy;
 import io.reactivex.Flowable;
@@ -95,6 +96,15 @@ public class HttpData {
     public Flowable fetchVideoUrl(String path) {
         Flowable observable = Flowable.create(new FetchVideoUrlOnSubscribe(path), BackpressureStrategy.BUFFER);
         return providers.getCacheData(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
+    }
+
+    /**
+     * 获取腾讯视频播放地址
+     * @return
+     */
+    public Flowable fetchQQVideoUrl(String path) {
+        Flowable observable = Flowable.create(new QQVideoOnSubscribe(path), BackpressureStrategy.BUFFER);
+        return providers.getCacheDataHours(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
 
 //    public void getMainList(String path, Observer<List<MainListDto>> observer) {

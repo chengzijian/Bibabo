@@ -17,5 +17,7 @@ public class BabyVideoDetailContract {
     interface Presenter extends BasePresenter<View> {
 
         void fetchVideoUrl(String mHtmlUrl);
+
+        void fetchQQVideoUrl(String mHtmlUrl);
     }
 }

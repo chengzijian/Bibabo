@@ -18,7 +18,6 @@ import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
-import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
@@ -71,9 +70,11 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         initRecyclerView();
         initPlayerVideo();
         String mHtmlUrl = getIntent().getStringExtra(INTENT_URL);
-        if (!StringUtils.isEmpty(mHtmlUrl)) {
-            presenter.fetchVideoUrl(mHtmlUrl);
-        }
+//        if (!StringUtils.isEmpty(mHtmlUrl)) {
+//            presenter.fetchVideoUrl(mHtmlUrl);
+//        }
+
+        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/m2lbjjlfidqc8iu/y0019jt9d3m.html");
     }
 
     private void initRecyclerView() {
@@ -240,8 +241,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     public void playVideo(String url) {
         List<GSYVideoModel> urls = new ArrayList<>();
         urls.add(new GSYVideoModel(url, "标题01"));
-        urls.add(new GSYVideoModel(url, "标题02"));
-        urls.add(new GSYVideoModel(url, "标题03"));
+        urls.add(new GSYVideoModel("http://153.37.232.147/vlive.qqvideo.tc.qq.com/x00220dypnu.p201.1.mp4?sdtfrom=v1010&guid=9292fbe6a29f78d1dad9b3ad2c26c714&vkey=7E5D691CF043B677DD8FEC323380A9E46E4BB0726DBEF4B182704F744932A1AAADBC3CD56608ABDC19FAFB7F02F966C41ADE42E962205F44E759D45621F66B36FE0AB9EB00805FF2A5417FF1AD2DEDD708CE0A6444E5E279710AD7616F30A5DBE397336AC4F8469E39C574D73BFAA1D3", "标题02"));
         detailPlayer.setUp(urls, 0);
     }
 

@@ -41,4 +41,26 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
                     }
                 });
     }
+
+    @Override
+    public void fetchQQVideoUrl(String mHtmlUrl) {
+        HttpData.getDefault().fetchQQVideoUrl(mHtmlUrl)
+                .compose(view.<VideoUrl>bindToLife())
+                .subscribeOn(Schedulers.io())
+                .subscribeOn(Schedulers.newThread())//子线程访问网络
+                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        view.error();
+                    }
+                })
+                .subscribe(new Consumer<VideoUrl>() {
+                    @Override
+                    public void accept(@NonNull VideoUrl result) throws Exception {
+                        view.playVideo(result.getUrl());
+                    }
+                });
+    }
+
 }
