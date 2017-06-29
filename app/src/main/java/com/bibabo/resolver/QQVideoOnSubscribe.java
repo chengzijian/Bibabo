@@ -1,13 +1,13 @@
 package com.bibabo.resolver;
 
 import android.renderscript.RenderScript;
-import android.util.Log;
 
 import com.bibabo.api.ApiException;
 import com.bibabo.api.OkHttp3Utils;
 import com.bibabo.entity.QQVideoInfo;
 import com.bibabo.entity.VideoUrl;
 import com.bibabo.framework.utils.JSONUtils;
+import com.bibabo.framework.utils.LogUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -41,7 +41,8 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
     public void subscribe(FlowableEmitter<T> subscriber) throws Exception {
         try {
             //开始疯狂的数据抓取啦 不解释了 看文档  http://www.open-open.com/jsoup/
-            Log.e("MainInfoHtmlOnSubscribe>", url);
+            url = "file:///android_asset/qq_video.html";
+            LogUtils.e("MainInfoHtmlOnSubscribe>", url);
             String source = OkHttp3Utils.getDefault()._getSyncString(url);
             subscriber.onNext(parseSource(source));
             subscriber.onComplete();
@@ -57,7 +58,7 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
             //e += Math.floor(16 * Math.random()).toString(16);
             e += Integer.toString((int) d, 16);
         }
-        Log.e("createGuid:>>", "" + e);
+        LogUtils.e("createGuid:>>", "" + e);
         return e;//"9292fbe6a29f78d1dad9b3ad2c26c714";
     }
 
@@ -67,14 +68,13 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
         Matcher mc = pat.matcher(href);//条件匹配
         while (mc.find()) {
             String substring = mc.group();//截取文件名后缀名
-            Log.e("substring:", substring);
+            LogUtils.e("substring:", substring);
             return substring;
         }
         return "";
     }
 
     private synchronized T parseSource(String source) throws Exception {
-        qqRm();
         VideoUrl result = null;
         Document doc = Jsoup.parse(source);
         Elements list = doc.select("link");
@@ -85,14 +85,14 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
             if (link.attr("rel").equals("canonical")) {
                 ehost = link.attr("href");
                 vid = getSubString(ehost).replace(".html", "");
-                Log.e("vid:", vid);
+                LogUtils.e("vid:", vid);
                 break;
             }
         }
 
         long currentTime = System.currentTimeMillis();
         String infoUrl = String.format(getinfo, (int) ((Math.random() * 9 + 1) * 100000), vid, guid, ehost, String.valueOf(currentTime / 1000), "sd", String.valueOf(currentTime));
-        Log.e("infoUrl:", infoUrl);
+        LogUtils.e("infoUrl:", infoUrl);
         String source2 = OkHttp3Utils.getDefault()._getSyncString(infoUrl);
         source2 = source2.substring(source2.indexOf("(") + 1, source2.lastIndexOf(")"));
         QQVideoInfo treasure = JSONUtils.fromJsonString(source2, QQVideoInfo.class);
@@ -102,7 +102,7 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
         String videoName = viBean.getFn().replace(".mp4", ".1.mp4");
         String vkey = viBean.getFvkey();
         String videoUrl = String.format(playVideoUrl, playPrefix, videoName, guid, vkey);
-        Log.e("videoUrl:", videoUrl);
+        LogUtils.e("videoUrl:", videoUrl);
         result = new VideoUrl(videoUrl);
 
         return (T) result;
@@ -121,13 +121,13 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
 
     private String qqRm() {
         String hex = ehexToString("1a0fe620487b3fcc03f1f205f981d65e");
-        Log.e("QQVideoOnSubscribe>>hex", hex);
+        LogUtils.e("QQVideoOnSubscribe>>hex", hex);
         String tempcalc = eTempcalc(hex, eSeed);
-        Log.e("QQVideoOnSubscribe>>tempcalc", tempcalc);
+        LogUtils.e("QQVideoOnSubscribe>>tempcalc", tempcalc);
         String urlenc = eUrlenc(tempcalc, 1, 1498714227);
-        Log.e("QQVideoOnSubscribe>>urlenc", urlenc);
+        LogUtils.e("QQVideoOnSubscribe>>urlenc", urlenc);
         String u1 = eU1(urlenc, 0);
-        Log.e("QQVideoOnSubscribe>>u1", u1);
+        LogUtils.e("QQVideoOnSubscribe>>u1", u1);
         return "";
     }
 

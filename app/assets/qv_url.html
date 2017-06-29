@@ -1,16 +1,12 @@
-
-<html>
-<meta charset="UTF-8">
+<!DOCTYPE html>
+<html lang="zh-cn">
 <head>
-
-    <!--一般视频过长时 视频不会加载了qqvideo.html-->
-
+    <meta charset="UTF-8">
     <!--普通视频 /qqvideo.html?vid=l0024si3r7q&guid=70172a7b5122e521f8ddb7836b6cf5a6&platform=10901&sdtfrom=v1010&defn=shd&ehost=https://v.qq.com/tv/p/topic/cqzzt/index.html&timestamp=-->
     <!--短的动画视频 /qqvideo.html?vid=n0020yrnly7&guid=9292fbe6a29f78d1dad9b3ad2c26c714&platform=10901&sdtfrom=v1010&defn=shd&ehost=&timestamp=-->
     <!--长的动画视频/qqvideo.html?vid=a0022vkdxum&guid=9292fbe6a29f78d1dad9b3ad2c26c714&platform=10901&sdtfrom=v1010&defn=shd&ehost=&timestamp=-->
     <script src="http://libs.baidu.com/jquery/1.9.1/jquery.min.js" type="text/javascript"></script>
     <script type="text/javascript">
-
         var vid = getQueryString("vid");
         var guid = getQueryString("guid");
         var platform = getQueryString("platform");
@@ -18,7 +14,7 @@
         var timestamp = getQueryString("timestamp");
         var ehost = getQueryString("ehost");
         var defn = getQueryString("defn");
-
+        var filename = getQueryString("filename");
 
         var _urlStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         var d = ("" + 1).charAt(0);
@@ -28,14 +24,14 @@
 
         function userClick(index) {
             <!--writeObj(tvp.$);-->
-            <!--$("#auth_img").append(createGUID());-->
+            <!--$("#get_info_div").append(createGUID());-->
 
-            $("#auth_img").append(vid);
-            $("#auth_img").append(guid);
-            $("#auth_img").append(platform);
-            $("#auth_img").append(sdtfrom);
-            $("#auth_img").append(timestamp);
-            $("#auth_img").append("</br>");
+            $("#get_info_div").append(vid);
+            $("#get_info_div").append(guid);
+            $("#get_info_div").append(platform);
+            $("#get_info_div").append(sdtfrom);
+            $("#get_info_div").append(timestamp);
+            $("#get_info_div").append("</br>");
         }
 
         function writeObj(obj){
@@ -44,29 +40,50 @@
                 var property=obj[i];
                 description+=i+" = "+property+"\n";
             }
-            $("#auth_img").append(description);
+            $("#get_info_div").append(description);
         }
 
-        function getQvRtm(index) {
+        function getKeyInfo(){
+            var url = getUrlEnc();
+            var qv_rmt = u1(url, 0);
+            var qv_rmt2 = u1(url, 1);
+
+            var keyUrl = "https://vv.video.qq.com/getkey?otype=json";
+            keyUrl +="&vid="+vid;
+            keyUrl +="&format=10203";
+            keyUrl +="&filename="+filename;
+            keyUrl +="&platform="+platform;
+            keyUrl +="&appVer=3.2.21";
+            keyUrl +="&vt=203";
+            keyUrl +="&sdtfrom="+sdtfrom;
+            keyUrl +="&guid="+guid;
+            keyUrl +="&charge=0";
+            keyUrl +="&_rnd="+timestamp;
+            keyUrl +="&_qv_rmt="+qv_rmt;
+            keyUrl +="&_qv_rmt2="+qv_rmt2;
+            keyUrl +="&_";
+            keyUrl +=timestamp;
+            keyUrl +="000=";
+
+            $("#get_key_div").append(keyUrl);
+        }
+
+        function getUrlEnc(){
             guid = guid || createGUID();
             platform = platform || "10901";
             sdtfrom = sdtfrom || "v1010";
             timestamp = timestamp || parseInt(+new Date / 1e3);
+            filename = filename || "";
             var key = platform + vid + timestamp + seed + g + h + d + sdtfrom;
-
             var temp = tempcalc(hexToString(haha(key)), seed);
             var url = urlenc(temp, d.charAt(0), timestamp);
+            return url;
+        }
 
-            $("#auth_img").append(timestamp);
-            $("#auth_img").append("</br>");
-
+        function getVideoInfo() {
+            var url = getUrlEnc();
             var qv_rmt = u1(url, 0);
-            $("#auth_img").append(qv_rmt);
-            $("#auth_img").append("</br>");
-
             var qv_rmt2 = u1(url, 1);
-            $("#auth_img").append(qv_rmt2);
-            $("#auth_img").append("</br>");
 
             var infoUrl = "https://vv.video.qq.com/getinfo?charge=0";
             infoUrl +="&defaultfmt=auto";
@@ -93,8 +110,7 @@
             infoUrl +="&_";
             infoUrl +=timestamp;
             infoUrl +="000=";
-            $("#auth_img").append(infoUrl);
-            $("#auth_img").append("</br>");
+            $("#get_info_div").append(infoUrl);
         }
 
         function getQueryString(name) {
@@ -143,34 +159,20 @@
 			}
 			return b
         }
+
+        $(document).ready(function(){
+            <!--如果 filename 不为空，说明是请求下一段视频地址-->
+            if(filename == ""){
+                getVideoInfo()
+            } else {
+                getKeyInfo()
+            }
+        });
+
     </script>
 </head>
 <body>
-
-    <input type="text" id="begin_index" value="1"/>
-    <br/>
-    <br/>
-        <div>注册帐号:
-            <input type="button" onclick="userClick(1)" value="开始注册"/>
-            <input type="button" onclick="getQvRtm(0)" value="qv_rtm"/>
-
-            <a onclick= "javascript:vodFlashType" style=" text-decoration:none; color:Black;"  target="_blank"> 目标页 </a></form>
-        </div>
-
-        <br/>
-        <div>验证码：<input type="text" id="auth_code" onkeydown="javascript:if (event.keyCode==13) register();" />
-        </div>
-        <br/>
-
-        <div id="auth_img"></div>
-
-        <br/>
-        <div><input type="text" id="auth_key" /></div>
-
-        <br/>
-        <br/>
-        <br/>
-        <br/>
-        <br/><div id="token_div"></div>
+<div id="get_info_div"></div>
+<div id="get_key_div"></div>
 </body>
 </html>

@@ -4,10 +4,14 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.webkit.JavascriptInterface;
+import android.webkit.WebView;
+import android.webkit.WebViewClient;
 import android.widget.ImageView;
 
 import com.bibabo.R;
@@ -18,6 +22,7 @@ import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
+import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
@@ -64,6 +69,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         return R.layout.fragment_video_detail;
     }
 
+    private WebView mWebView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -74,7 +80,52 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 //            presenter.fetchVideoUrl(mHtmlUrl);
 //        }
 
-        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/p6x17oo2r55470q.html");
+        initWebView();
+        //presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/p6x17oo2r55470q.html");
+    }
+
+    private void initWebView() {
+        mWebView = new WebView(getContext());
+        //下面三行设置主要是为了待webView成功加载html网页之后，我们能够通过webView获取到具体的html字符串
+        mWebView.getSettings().setJavaScriptEnabled(true);
+        mWebView.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
+        mWebView.setWebViewClient(new WebViewClient() {
+            @Override
+            public void onPageStarted(WebView view, String url, Bitmap favicon) {
+                super.onPageStarted(view, url, favicon);
+            }
+
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                view.loadUrl(url);
+                return true;
+            }
+
+            @Override
+            public void onPageFinished(WebView view, String url) {
+                super.onPageFinished(view, url);
+                view.loadUrl("javascript:window.local_obj.showSource('<body>'+"
+                        + "document.getElementsByTagName('body')[0].innerHTML+'</body>');");
+            }
+
+            @Override
+            public void onReceivedError(WebView view, int errorCode,
+                                        String description, String failingUrl) {
+                super.onReceivedError(view, errorCode, description, failingUrl);
+            }
+
+        });
+
+        mWebView.loadUrl("file:///android_asset/qv_url.html?filename=123");
+    }
+
+    final class InJavaScriptLocalObj {
+        @JavascriptInterface
+        public void showSource(String html) {
+            //refreshHtmlContent(html);
+            html = html.replace("&amp;", "&");
+            LogUtils.e("", html);
+        }
     }
 
     private void initRecyclerView() {
@@ -200,6 +251,11 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        if(mWebView != null){
+            mWebView.removeAllViews();
+            mWebView.destroy();
+            mWebView = null;
+        }
         GSYVideoPlayer.releaseAllVideos();
         if (orientationUtils != null)
             orientationUtils.releaseListener();
