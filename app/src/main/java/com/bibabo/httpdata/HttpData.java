@@ -104,7 +104,7 @@ public class HttpData {
      */
     public Flowable fetchQQVideoUrl(String path) {
         Flowable observable = Flowable.create(new QQVideoOnSubscribe(path), BackpressureStrategy.BUFFER);
-        return providers.getCacheDataHours(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
+        return observable;//providers.getCacheDataHours(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
 
 //    public void getMainList(String path, Observer<List<MainListDto>> observer) {

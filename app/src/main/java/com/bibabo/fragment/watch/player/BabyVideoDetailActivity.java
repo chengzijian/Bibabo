@@ -74,7 +74,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 //            presenter.fetchVideoUrl(mHtmlUrl);
 //        }
 
-        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/m2lbjjlfidqc8iu/y0019jt9d3m.html");
+        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/p6x17oo2r55470q.html");
     }
 
     private void initRecyclerView() {
@@ -240,8 +240,8 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     public void playVideo(String url) {
         List<GSYVideoModel> urls = new ArrayList<>();
+        urls.add(new GSYVideoModel("http://140.207.247.12/vlive.qqvideo.tc.qq.com/v00220yfn1c.p203.1.mp4?sdtfrom=v1010&guid=9292fbe6a29f78d1dad9b3ad2c26c714&vkey=DD05981736F4A4967E9254CA5FCE5AFF5092E85DE2CFAC6F546926551E77351D0260A26F708E3BBA21235C8124971EA7EE4CBE7D6225D551D8D17276739BD6702AE94F896494CBF7ED94112AD478661A2AE59F7C5B495869587EEF065007CBD1028C3A8F97E1D8D3CF64815BC4B43CC4", "标题02"));
         urls.add(new GSYVideoModel(url, "标题01"));
-        urls.add(new GSYVideoModel("http://153.37.232.147/vlive.qqvideo.tc.qq.com/x00220dypnu.p201.1.mp4?sdtfrom=v1010&guid=9292fbe6a29f78d1dad9b3ad2c26c714&vkey=7E5D691CF043B677DD8FEC323380A9E46E4BB0726DBEF4B182704F744932A1AAADBC3CD56608ABDC19FAFB7F02F966C41ADE42E962205F44E759D45621F66B36FE0AB9EB00805FF2A5417FF1AD2DEDD708CE0A6444E5E279710AD7616F30A5DBE397336AC4F8469E39C574D73BFAA1D3", "标题02"));
         detailPlayer.setUp(urls, 0);
     }
 
