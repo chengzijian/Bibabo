@@ -107,6 +107,10 @@ public class HttpData {
         return observable;//providers.getCacheDataHours(observable, new DynamicKey(path), new EvictDynamicKey(false)).map(new HttpResultFuncCcche());
     }
 
+    public Flowable fetchVideoInfo(String path) {
+        return Flowable.create(new QQVideoOnSubscribe(path), BackpressureStrategy.BUFFER);
+    }
+
 //    public void getMainList(String path, Observer<List<MainListDto>> observer) {
 //        Observable observable = service.fetchList(path).map(new HttpResultFunc<List<MainListDto>>());
 //        Observable observableCahce = providers.fetchList(observable, new DynamicKey("书本类别"), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<List<MainListDto>>());

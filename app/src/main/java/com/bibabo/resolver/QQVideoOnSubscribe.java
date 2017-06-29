@@ -1,11 +1,10 @@
 package com.bibabo.resolver;
 
-import android.renderscript.RenderScript;
-
 import com.bibabo.api.ApiException;
 import com.bibabo.api.OkHttp3Utils;
+import com.bibabo.entity.PlayVideoData;
 import com.bibabo.entity.QQVideoInfo;
-import com.bibabo.entity.VideoUrl;
+import com.bibabo.entity.VideoData;
 import com.bibabo.framework.utils.JSONUtils;
 import com.bibabo.framework.utils.LogUtils;
 
@@ -40,8 +39,6 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
     @Override
     public void subscribe(FlowableEmitter<T> subscriber) throws Exception {
         try {
-            //开始疯狂的数据抓取啦 不解释了 看文档  http://www.open-open.com/jsoup/
-            url = "file:///android_asset/qq_video.html";
             LogUtils.e("MainInfoHtmlOnSubscribe>", url);
             String source = OkHttp3Utils.getDefault()._getSyncString(url);
             subscriber.onNext(parseSource(source));
@@ -58,8 +55,7 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
             //e += Math.floor(16 * Math.random()).toString(16);
             e += Integer.toString((int) d, 16);
         }
-        LogUtils.e("createGuid:>>", "" + e);
-        return e;//"9292fbe6a29f78d1dad9b3ad2c26c714";
+        return e;
     }
 
     private String getSubString(String href) {
@@ -75,37 +71,42 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
     }
 
     private synchronized T parseSource(String source) throws Exception {
-        VideoUrl result = null;
-        Document doc = Jsoup.parse(source);
-        Elements list = doc.select("link");
-        String guid = createGuid();
-        String ehost = "";
-        String vid = "";
-        for (Element link : list) {
-            if (link.attr("rel").equals("canonical")) {
-                ehost = link.attr("href");
-                vid = getSubString(ehost).replace(".html", "");
-                LogUtils.e("vid:", vid);
-                break;
+        if(url.contains("getinfo")){
+            PlayVideoData result = new PlayVideoData();
+            source = source.replace("QZOutputJson=", "").replace(";", "");
+            QQVideoInfo treasure = JSONUtils.fromJsonString(source, QQVideoInfo.class);
+
+            QQVideoInfo.VlBean.ViBean viBean = treasure.getVl().getVi().get(0);
+            String playPrefix = viBean.getUl().getUi().get(0).getUrl();
+            String videoName = viBean.getFn().replace(".mp4", ".1.mp4");
+            String vkey = viBean.getFvkey();
+
+            String guid = url.substring(url.indexOf("guid="));
+            guid = guid.substring(4, guid.indexOf("&"));
+            String videoUrl = String.format(playVideoUrl, playPrefix, videoName, guid, vkey);
+            result.setTitle(viBean.getTi());
+            result.setUrl(videoUrl);
+            return (T) result;
+        } else {
+            //这里只需要拿到vid、guid、ehost、timestamp即可
+            VideoData result = new VideoData();
+
+            Document doc = Jsoup.parse(source);
+            Elements list = doc.select("link");
+            //result.setGuid(createGuid());
+            result.setGuid("9292fbe6a29f78d1dad9b3ad2c26c714");
+            for (Element link : list) {
+                if (link.attr("rel").equals("canonical")) {
+                    String ehost = link.attr("href");
+                    String vid = getSubString(ehost).replace(".html", "");
+                    result.setEhost(ehost);
+                    result.setVid(vid);
+                    break;
+                }
             }
+            return (T) result;
         }
 
-        long currentTime = System.currentTimeMillis();
-        String infoUrl = String.format(getinfo, (int) ((Math.random() * 9 + 1) * 100000), vid, guid, ehost, String.valueOf(currentTime / 1000), "sd", String.valueOf(currentTime));
-        LogUtils.e("infoUrl:", infoUrl);
-        String source2 = OkHttp3Utils.getDefault()._getSyncString(infoUrl);
-        source2 = source2.substring(source2.indexOf("(") + 1, source2.lastIndexOf(")"));
-        QQVideoInfo treasure = JSONUtils.fromJsonString(source2, QQVideoInfo.class);
-
-        QQVideoInfo.VlBean.ViBean viBean = treasure.getVl().getVi().get(0);
-        String playPrefix = viBean.getUl().getUi().get(0).getUrl();
-        String videoName = viBean.getFn().replace(".mp4", ".1.mp4");
-        String vkey = viBean.getFvkey();
-        String videoUrl = String.format(playVideoUrl, playPrefix, videoName, guid, vkey);
-        LogUtils.e("videoUrl:", videoUrl);
-        result = new VideoUrl(videoUrl);
-
-        return (T) result;
     }
 
 //    https://vv.video.qq.com/getinfo?callback=txplayerJsonpCallBack_getinfo_897766&&charge=0&vid=l0024si3r7q&defaultfmt=auto&otype=json&guid=70172a7b5122e521f8ddb7836b6cf5a6&platform=10901&defnpayver=1&appVer=3.2.21&sdtfrom=v1010&host=v.qq.com&ehost=https%3A%2F%2Fv.qq.com%2Ftv%2Fp%2Ftopic%2Fcqzzt%2Findex.html&sphttps=1&_rnd=1498708582&spwm=2&defn=hd&fhdswitch=1&show1080p=1&isHLS=0&newplatform=10901&defsrc=2&_qv_rmt=VKAjyq%2FGA197882zW%3D&_qv_rmt2=em9vTNb91480523jw%3D&_1498708582732=

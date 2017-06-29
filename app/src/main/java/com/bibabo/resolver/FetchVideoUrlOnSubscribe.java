@@ -2,7 +2,7 @@ package com.bibabo.resolver;
 
 import com.bibabo.api.ApiException;
 import com.bibabo.api.OkHttp3Utils;
-import com.bibabo.entity.VideoUrl;
+import com.bibabo.entity.PlayVideoData;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.StringUtils;
 
@@ -44,7 +44,7 @@ public class FetchVideoUrlOnSubscribe<T> implements FlowableOnSubscribe<T> {
     }
 
     private synchronized T parseSource(String source) {
-        VideoUrl videoUrl = null;
+        PlayVideoData result = new PlayVideoData();
         Document doc = Jsoup.parse(source);
         Elements list = doc.select("script");
         String scriptString = "";
@@ -63,19 +63,19 @@ public class FetchVideoUrlOnSubscribe<T> implements FlowableOnSubscribe<T> {
             pdtype = pdtype.substring(pdtype.indexOf("'") + 1, pdtype.indexOf(";") - 1);
 
             if (pdtype.equals("10")) {
-                videoUrl = new VideoUrl(String.format("http://swf.youban.com/swf/lmp4dir/%s.mp4", videoName));
+                result.setUrl(String.format("http://swf.youban.com/swf/lmp4dir/%s.mp4", videoName));
             } else if (pdtype.equals("1")) {
                 String storyjihao = scriptString.substring(scriptString.indexOf("storyjihao"));
                 storyjihao = storyjihao.substring(storyjihao.indexOf("'") + 1, storyjihao.indexOf(";") - 1);
                 /*if (storyjihao.equals("0")) {
                     videoUrl = new VideoUrl(swflink);
                 } else */if (storyjihao.equals("1")) {
-                    videoUrl = new VideoUrl(String.format("http://swf.youban.com/swf/lgsmp4d/%s.mp4", videoName));
+                    result.setUrl(String.format("http://swf.youban.com/swf/lgsmp4d/%s.mp4", videoName));
                 }
             }
         }
 
-        return (T) videoUrl;
+        return (T) result;
     }
 
 

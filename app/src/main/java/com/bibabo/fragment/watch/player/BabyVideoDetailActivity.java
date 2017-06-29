@@ -20,9 +20,12 @@ import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
+import com.bibabo.entity.PlayVideoData;
+import com.bibabo.entity.VideoData;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.utils.LogUtils;
+import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
 import com.shuyu.gsyvideoplayer.listener.LockClickListener;
@@ -31,13 +34,14 @@ import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
+import org.jsoup.Jsoup;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import butterknife.BindView;
 
 /**
- *
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
@@ -70,6 +74,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     private WebView mWebView;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -81,7 +86,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 //        }
 
         initWebView();
-        //presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/p6x17oo2r55470q.html");
+        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/q9fcxubnjow4epa/d0514x7bkxy.html");
     }
 
     private void initWebView() {
@@ -116,15 +121,25 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
         });
 
-        mWebView.loadUrl("file:///android_asset/qv_url.html?filename=123");
+        //mWebView.loadUrl("file:///android_asset/qv_url.html?filename=123");
     }
 
     final class InJavaScriptLocalObj {
         @JavascriptInterface
         public void showSource(String html) {
             //refreshHtmlContent(html);
-            html = html.replace("&amp;", "&");
             LogUtils.e("", html);
+            String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
+            if (!StringUtils.isEmpty(getInfoUrl)) {
+                //https://vv.video.qq.com/getinfo?
+                presenter.fetchVideoInfo(getInfoUrl);
+            } else {
+                String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
+                if (!StringUtils.isEmpty(getKeyUrl)) {
+                    //https://vv.video.qq.com/getkey?
+                    presenter.fetchNextInfo(getKeyUrl);
+                }
+            }
         }
     }
 
@@ -251,7 +266,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if(mWebView != null){
+        if (mWebView != null) {
             mWebView.removeAllViews();
             mWebView.destroy();
             mWebView = null;
@@ -294,11 +309,18 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void playVideo(String url) {
+    public void playVideo(PlayVideoData result) {
         List<GSYVideoModel> urls = new ArrayList<>();
-        urls.add(new GSYVideoModel("http://140.207.247.12/vlive.qqvideo.tc.qq.com/v00220yfn1c.p203.1.mp4?sdtfrom=v1010&guid=9292fbe6a29f78d1dad9b3ad2c26c714&vkey=DD05981736F4A4967E9254CA5FCE5AFF5092E85DE2CFAC6F546926551E77351D0260A26F708E3BBA21235C8124971EA7EE4CBE7D6225D551D8D17276739BD6702AE94F896494CBF7ED94112AD478661A2AE59F7C5B495869587EEF065007CBD1028C3A8F97E1D8D3CF64815BC4B43CC4", "标题02"));
-        urls.add(new GSYVideoModel(url, "标题01"));
+        urls.add(new GSYVideoModel(result.getUrl(), result.getTitle()));
         detailPlayer.setUp(urls, 0);
+    }
+
+    @Override
+    public void fetchVideoUrlSuccess(VideoData result) {
+        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
+                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
+        LogUtils.e("getInfoUrl:", url);
+        mWebView.loadUrl(url);
     }
 
     @Override
