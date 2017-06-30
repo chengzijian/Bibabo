@@ -22,6 +22,7 @@ package com.bibabo.api;
 
 import io.reactivex.Flowable;
 import retrofit2.http.GET;
+import retrofit2.http.Path;
 import retrofit2.http.Query;
 
 /**
@@ -31,4 +32,7 @@ public interface HttpRequestApiService {
 
     @GET(Constant.METHOD_CHILDREN_LIST_PATH)
     Flowable<String> fetchQVChildrenVideoList(@Query("itype") String itype, @Query("offset") String offset);
+
+    @GET(Constant.METHOD_MOVIE_LIST_PATH)
+    Flowable<String> fetchQQVideoUrl(@Path("vid") String vid);
 }

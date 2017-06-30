@@ -42,12 +42,13 @@ import java.util.List;
 import butterknife.BindView;
 
 /**
+ *
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
         implements ListBaseView, BabyVideoDetailContract.View {
 
-    public static final String INTENT_URL = "html_url";
+    public static final String INTENT_URL = "movie_vid";
 
     @BindView(R.id.id_recycler_view)
     RecyclerView mRecyclerView;
@@ -61,10 +62,10 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     private OrientationUtils orientationUtils;
 
-    public static void launch(Context context, String url) {
+    public static void launch(Context context, String vid) {
         Intent intent = new Intent();
         intent.setClass(context, BabyVideoDetailActivity.class);
-        intent.putExtra(INTENT_URL, url);
+        intent.putExtra(INTENT_URL, vid);
         context.startActivity(intent);
     }
 
@@ -80,13 +81,12 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         super.onCreate(savedInstanceState);
         initRecyclerView();
         initPlayerVideo();
-        String mHtmlUrl = getIntent().getStringExtra(INTENT_URL);
-//        if (!StringUtils.isEmpty(mHtmlUrl)) {
-//            presenter.fetchVideoUrl(mHtmlUrl);
-//        }
-
         initWebView();
-        presenter.fetchQQVideoUrl("https://v.qq.com/x/cover/q9fcxubnjow4epa/d0514x7bkxy.html");
+
+        String vid = getIntent().getStringExtra(INTENT_URL);
+        if (!StringUtils.isEmpty(vid)) {
+            presenter.fetchQQVideoUrl(vid);
+        }
     }
 
     private void initWebView() {
@@ -321,6 +321,14 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
                 result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
         LogUtils.e("getInfoUrl:", url);
         mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void fetchVideoUrlSuccess(List<PlayVideoData> result) {
+//        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
+//                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
+//        LogUtils.e("getInfoUrl:", url);
+//        mWebView.loadUrl(url);
     }
 
     @Override

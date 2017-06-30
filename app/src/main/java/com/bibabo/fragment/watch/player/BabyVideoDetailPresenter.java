@@ -1,9 +1,15 @@
 package com.bibabo.fragment.watch.player;
 
+import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
+import com.bibabo.entity.QVMovieInfo;
 import com.bibabo.entity.VideoData;
 import com.bibabo.entity.PlayVideoData;
 import com.bibabo.httpdata.HttpData;
+import com.bibabo.resolver.QVMovieDetailsConvert;
+import com.bibabo.resolver.QVMovieListConvert;
+
+import java.util.List;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -44,24 +50,45 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
     }
 
     @Override
-    public void fetchQQVideoUrl(String mHtmlUrl) {
-        HttpData.getDefault().fetchQQVideoUrl(mHtmlUrl)
-                .compose(view.<VideoData>bindToLife())
-                .subscribeOn(Schedulers.io())
-                .subscribeOn(Schedulers.newThread())//子线程访问网络
-                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
-                .doOnError(new Consumer<Throwable>() {
+    public void fetchQQVideoUrl(String vid) {
+        DefaultRetrofit.api().fetchQQVideoUrl(vid)
+                .flatMap(new QVMovieDetailsConvert<String, List<PlayVideoData>>())
+                /*.filter(new Predicate<Object>() {
                     @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.error();
+                    public boolean test(Object city) throws Exception {
+                        String id = city.getId();
+                        if(Integer.parseInt(id)<5){
+                            return true;
+                        }
+                        return false;
                     }
-                })
-                .subscribe(new Consumer<VideoData>() {
+                })*/
+                .compose(view.<List<PlayVideoData>>bindToLife())
+                .compose(applyCommonOperators())
+                .subscribe(new Consumer<List<PlayVideoData>>() {
                     @Override
-                    public void accept(@NonNull VideoData result) throws Exception {
+                    public void accept(@NonNull List<PlayVideoData> result) throws Exception {
                         view.fetchVideoUrlSuccess(result);
                     }
                 });
+
+//        HttpData.getDefault().fetchQQVideoUrl(vid)
+//                .compose(view.<VideoData>bindToLife())
+//                .subscribeOn(Schedulers.io())
+//                .subscribeOn(Schedulers.newThread())//子线程访问网络
+//                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
+//                .doOnError(new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(@NonNull Throwable throwable) throws Exception {
+//                        view.error();
+//                    }
+//                })
+//                .subscribe(new Consumer<VideoData>() {
+//                    @Override
+//                    public void accept(@NonNull VideoData result) throws Exception {
+//                        view.fetchVideoUrlSuccess(result);
+//                    }
+//                });
     }
 
     @Override

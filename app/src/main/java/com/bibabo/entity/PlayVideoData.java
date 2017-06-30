@@ -5,6 +5,7 @@ import java.io.Serializable;
 public class PlayVideoData implements Serializable {
     private static final long serialVersionUID = -2864689024433827268L;
     private String url;
+    private String vid;
     private String title;
 
     public void setUrl(String url) {
