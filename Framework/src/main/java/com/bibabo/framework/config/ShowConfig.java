@@ -14,7 +14,7 @@ import java.io.File;
  */
 public class ShowConfig {
 
-//    public static final int DEFAULT_SIZE = 20;
+    public static final int DEFAULT_PAGE_SIZE = 30;
 //    /**
 //     * 链接url *
 //     */

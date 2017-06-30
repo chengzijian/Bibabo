@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseViewPagerFragment;
+import com.bibabo.entity.CategoryData;
 import com.bibabo.fragment.watch.child.BabyWatchItemFragment;
 
 /**
@@ -37,27 +38,26 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     }
 
     @Override
-    protected void setCategoryTitles() {
-        categoryNames = new String[]{
-                "儿歌", "故事", "成语故事", "好性格", "胎教故事"
-                , "新年故事", "冬季温暖故事", "睡前故事", "益智童话故事"
-        };
-        categoryLinks = new String[]{
-                "erge-c715-s2-p%d.html",
-                "story-c701-s2-p%d.html",
-                "story-c12-s2-p%d.html",
-                "story-t1183-s1-p%d.html",
-                "story-t2311-s1-p%d.html",
-                "story-t2298-s1-p%d.html",
-                "story-t2221-s1-p%d.html",
-                "story-t1627-s1-p%d.html",
-                "story-t800-s1-p%d.html"
-        };
+    protected void setCategoryList() {
+        childCategoryList.clear();
+
+        childCategoryList.add(new CategoryData("儿童音乐", "1"));
+        childCategoryList.add(new CategoryData("儿童益智", "2"));
+        childCategoryList.add(new CategoryData("儿童教育", "3"));
+        childCategoryList.add(new CategoryData("儿童历险", "4"));
+        childCategoryList.add(new CategoryData("儿童奇幻", "5"));
+        childCategoryList.add(new CategoryData("儿童搞笑", "6"));
+        childCategoryList.add(new CategoryData("儿童竞技", "7"));
+        childCategoryList.add(new CategoryData("少儿经典", "8"));
+        childCategoryList.add(new CategoryData("少儿综艺", "9"));
+        childCategoryList.add(new CategoryData("海外精选", "10"));
+        childCategoryList.add(new CategoryData("合家欢剧场", "13"));
+
     }
 
     @Override
     protected Fragment getFragment(int position) {
-        return BabyWatchItemFragment.newInstance(categoryLinks[position]);
+        return BabyWatchItemFragment.newInstance(childCategoryList.get(position).getItype());
     }
 
     @Override

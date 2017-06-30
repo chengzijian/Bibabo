@@ -31,20 +31,20 @@ import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  */
-public class RetrofitUtils {
+public class DefaultRetrofit {
 
     public static final Gson GSON = new GsonBuilder().setDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSZ").create();
 
     private static Retrofit mRetrofit;
     private static OkHttpClient mOkHttpClient;
-    private APIService service;
+    private HttpRequestApiService service;
 
     /**
      * 获取Retrofit对象
      *
      * @return
      */
-    private RetrofitUtils() {
+    private DefaultRetrofit() {
         if (null == mRetrofit) {
             if (null == mOkHttpClient) {
                 mOkHttpClient = OkHttp3Utils.getDefault().getOkHttpClient();
@@ -56,18 +56,19 @@ public class RetrofitUtils {
                     //设置使用okhttp网络请求
                     .client(mOkHttpClient)
                     //添加转化库，默认是Gson
-                    .addConverterFactory(GsonConverterFactory.create(GSON))
+                    //.addConverterFactory(GsonConverterFactory.create(GSON))
+                    .addConverterFactory(StringConverterFactory.create())
                     .addCallAdapterFactory(RxJava2CallAdapterFactory.createWithScheduler(Schedulers.io()))
                     .build();
         }
-        service = mRetrofit.create(APIService.class);
+        service = mRetrofit.create(HttpRequestApiService.class);
     }
 
     private static class HolderClass {
-        private static final RetrofitUtils INSTANCE = new RetrofitUtils();
+        private static final DefaultRetrofit INSTANCE = new DefaultRetrofit();
     }
 
-    public static APIService api() {
+    public static HttpRequestApiService api() {
         return HolderClass.INSTANCE.service;
     }
 }

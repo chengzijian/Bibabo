@@ -2,10 +2,13 @@ package com.bibabo.base.list;
 
 import com.bibabo.base.mvp.BasePresenterImpl;
 import com.bibabo.entity.DataListResult;
+import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.utils.LogUtils;
 
 import org.reactivestreams.Publisher;
 import org.reactivestreams.Subscription;
+
+import java.util.List;
 
 import io.reactivex.Flowable;
 import io.reactivex.FlowableTransformer;
@@ -20,13 +23,13 @@ import io.reactivex.schedulers.Schedulers;
  */
 public class ListBasePresenterImpl<V extends ListBaseView, MODEL> extends BasePresenterImpl<V> {
 
-    protected FlowableTransformer<DataListResult<MODEL>, DataListResult<MODEL>> applyCommonOperators() {
+    protected FlowableTransformer<List<MODEL>, List<MODEL>> applyCommonOperators() {
         return commonOperatorsTransformer;
     }
 
-    private final FlowableTransformer<DataListResult<MODEL>, DataListResult<MODEL>> commonOperatorsTransformer = new FlowableTransformer<DataListResult<MODEL>, DataListResult<MODEL>>() {
+    private final FlowableTransformer<List<MODEL>, List<MODEL>> commonOperatorsTransformer = new FlowableTransformer<List<MODEL>, List<MODEL>>() {
         @Override
-        public Publisher<DataListResult<MODEL>> apply(Flowable<DataListResult<MODEL>> upstream) {
+        public Publisher<List<MODEL>> apply(Flowable<List<MODEL>> upstream) {
             return upstream
                     .doOnSubscribe(new Consumer<Subscription>() {
                         @Override
@@ -34,18 +37,13 @@ public class ListBasePresenterImpl<V extends ListBaseView, MODEL> extends BasePr
                             view.notifyLoadingStarted();
                         }
                     })
-                    .doOnNext(new Consumer<DataListResult<MODEL>>() {
-                        @Override
-                        public void accept(@NonNull DataListResult<MODEL> models) throws Exception {
-                            view.setEnd(models.isAllDataLoaded());
-                            if(!models.isAllDataLoaded()){
-                                view.setCurrPage(models.getCurrPage());
-                            }
-                        }
-                    })
-                    .subscribeOn(Schedulers.io())
-                    .subscribeOn(Schedulers.newThread())//子线程访问网络
-                    .observeOn(AndroidSchedulers.mainThread())//回调到主线程
+//                    .doOnNext(new Consumer<List<MODEL>>() {
+//                        @Override
+//                        public void accept(@NonNull List<MODEL> models) throws Exception {
+//                            view.setEnd(models.size() < ShowConfig.DEFAULT_PAGE_SIZE);
+//                        }
+//                    })
+                    .observeOn(AndroidSchedulers.mainThread())
                     .doOnError(new Consumer<Throwable>() {
                         @Override
                         public void accept(@NonNull Throwable throwable) throws Exception {

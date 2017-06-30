@@ -12,7 +12,9 @@ import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseFragment;
 import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.MainListDto;
+import com.bibabo.entity.QVMovieInfo;
 import com.bibabo.fragment.watch.player.BabyVideoDetailActivity;
+import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.utils.StringUtils;
 
 import java.util.List;
@@ -22,14 +24,14 @@ import java.util.List;
  * Created by zijian.cheng on 2017/6/1.
  */
 public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContract.View
-        , BabyWatchItemPresenter, MainListDto> implements BabyWatchItemContract.View {
+        , BabyWatchItemPresenter, QVMovieInfo> implements BabyWatchItemContract.View {
 
-    private String httpUrl;
+    private String mItype;
 
-    public static BabyWatchItemFragment newInstance(String url) {
+    public static BabyWatchItemFragment newInstance(String type) {
         Bundle args = new Bundle();
         BabyWatchItemFragment fragment = new BabyWatchItemFragment();
-        args.putString("url", url);
+        args.putString("type", type);
         fragment.setArguments(args);
         return fragment;
     }
@@ -42,12 +44,12 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        httpUrl = getArguments().getString("url");
+        mItype = getArguments().getString("type");
     }
 
     @NonNull
     @Override
-    public BaseRecyclerListAdapter<MainListDto, ?> createAdapter() {
+    public BaseRecyclerListAdapter<QVMovieInfo, ?> createAdapter() {
         return new BabyWatchItemAdapter();
     }
 
@@ -58,15 +60,15 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
 
     @Override
     protected BaseRecyclerListAdapter.OnItemClickListener getOnItemClickListener() {
-        return new BaseRecyclerListAdapter.OnItemClickListener<ViewHolder, MainListDto>() {
+        return new BaseRecyclerListAdapter.OnItemClickListener<ViewHolder, QVMovieInfo>() {
 
             @Override
-            public void onItemClick(View view, ViewHolder holder, MainListDto data) {
-                BabyVideoDetailActivity.launch(getContext(), data.getLink());
+            public void onItemClick(View view, ViewHolder holder, QVMovieInfo data) {
+                BabyVideoDetailActivity.launch(getContext(), data.getVideoHtmlUrl());
             }
 
             @Override
-            public boolean onItemLongClick(View view, ViewHolder holder, MainListDto data) {
+            public boolean onItemLongClick(View view, ViewHolder holder, QVMovieInfo data) {
                 return false;
             }
         };
@@ -74,13 +76,15 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
 
     @Override
     protected void loadData() {
-        if(!StringUtils.isEmpty(httpUrl)){
-            presenter.fetchList(String.format(httpUrl, clear ? 1 : getNextPage()));
+        if(!StringUtils.isEmpty(mItype)){
+            int page = clear ? 0 : getNextPage();
+            int offset = page * ShowConfig.DEFAULT_PAGE_SIZE;
+            presenter.fetchQVChildrenVideoList(mItype, String.valueOf(offset));
         }
     }
 
     @Override
-    public void updateCurrentList(List<MainListDto> items) {
+    public void updateCurrentList(List<QVMovieInfo> items) {
         updateList(items);
         updateViewState();
     }

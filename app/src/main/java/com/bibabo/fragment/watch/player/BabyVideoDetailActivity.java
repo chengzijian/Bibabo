@@ -329,11 +329,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void setCurrPage(int page) {
-
-    }
-
-    @Override
     public void setRefresh(boolean refresh) {
 
     }

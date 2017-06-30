@@ -155,19 +155,19 @@ public abstract class ListBaseFragment<V extends ListBaseView, T extends ListBas
     @Override
     public void setEnd(boolean end) {
         isEnd = end;
+        if(!isEnd){//如果不是最后一些，page + 1
+            page += 1;
+        } else {
+            page = 0;
+        }
+    }
+
+    public int getNextPage(){
+        return page;
     }
 
     public boolean isEnd() {
         return isEnd;
-    }
-
-    @Override
-    public void setCurrPage(int page) {
-        this.page = page;
-    }
-
-    public int getNextPage() {
-        return page + 1;
     }
 
     protected void setSwipeToRefreshEnabled(boolean enable) {

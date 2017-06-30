@@ -9,8 +9,12 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 
 import com.bibabo.R;
+import com.bibabo.entity.CategoryData;
 import com.flyco.tablayout.SlidingTabLayout;
 import com.flyco.tablayout.listener.OnTabSelectListener;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 
@@ -34,8 +38,9 @@ public abstract class BaseViewPagerFragment extends BaseFragment {
     protected ViewPager mViewPager;
 
     private ChildViewPageAdapter mViewPagerAdapter;
-    protected String[] categoryNames;
-    protected String[] categoryLinks;
+    protected List<CategoryData> childCategoryList = new ArrayList<>();
+    private String[] categoryNames;
+//    protected String[] categoryLinks;
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
@@ -70,7 +75,15 @@ public abstract class BaseViewPagerFragment extends BaseFragment {
             currentSingleDayFragment = savedInstanceState.getInt(CURRENT_SINGLE_DAY_FRAGMENT_POSITION);
         }
 
-        setCategoryTitles();
+        setCategoryList();
+
+        int size = childCategoryList.size();
+        if (size > 0) {
+            categoryNames = new String[size];
+            for (int i = 0; i < size; i++) {
+                categoryNames[i] = childCategoryList.get(i).getTitle();
+            }
+        }
         setUpViewPagerForNarrowMode(singleDayFragmentsTags, currentSingleDayFragment);
     }
 
@@ -115,7 +128,7 @@ public abstract class BaseViewPagerFragment extends BaseFragment {
         mViewPager.setPageMarginDrawable(R.drawable.page_margin);
     }
 
-    protected abstract void setCategoryTitles();
+    protected abstract void setCategoryList();
 
     protected abstract Fragment getFragment(int position);
 
@@ -144,7 +157,7 @@ public abstract class BaseViewPagerFragment extends BaseFragment {
 
         @Override
         public int getCount() {
-            return categoryNames.length;
+            return childCategoryList.size();
         }
 
         @Override

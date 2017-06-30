@@ -9,6 +9,7 @@ import android.view.View;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseViewPagerFragment;
+import com.bibabo.entity.CategoryData;
 import com.bibabo.fragment.watch.child.BabyWatchItemFragment;
 
 /**
@@ -37,10 +38,10 @@ public class BabyMusicFragment extends MVPBaseViewPagerFragment<BabyMusicContrac
     }
 
     @Override
-    protected void setCategoryTitles() {
-        categoryNames = new String[]{
-                "儿歌","英文","故事"
-        };
+    protected void setCategoryList() {
+        childCategoryList.clear();
+        childCategoryList.add(new CategoryData("test11",""));
+        childCategoryList.add(new CategoryData("test22",""));
     }
 
     @Override

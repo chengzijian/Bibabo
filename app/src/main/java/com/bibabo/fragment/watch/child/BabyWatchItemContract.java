@@ -3,6 +3,7 @@ package com.bibabo.fragment.watch.child;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.mvp.BasePresenter;
 import com.bibabo.entity.MainListDto;
+import com.bibabo.entity.QVMovieInfo;
 
 import java.util.List;
 
@@ -13,11 +14,11 @@ import java.util.List;
 public class BabyWatchItemContract {
     public interface View extends ListBaseView {
 
-        void updateCurrentList(List<MainListDto> list);
+        void updateCurrentList(List<QVMovieInfo> list);
     }
 
     public interface Presenter extends BasePresenter<View> {
-        //获取网页信息
-        void fetchList(String httpUrl);
+
+        void fetchQVChildrenVideoList(String itype, String offset);
     }
 }
