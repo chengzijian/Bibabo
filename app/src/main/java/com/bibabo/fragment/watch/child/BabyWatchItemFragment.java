@@ -64,7 +64,7 @@ public class BabyWatchItemFragment extends ListBaseFragment<BabyWatchItemContrac
 
             @Override
             public void onItemClick(View view, ViewHolder holder, QVMovieInfo data) {
-                BabyVideoDetailActivity.launch(getContext(), data.getVideoHtmlUrl());
+                BabyVideoDetailActivity.launch(getContext(), data.getVid());
             }
 
             @Override
