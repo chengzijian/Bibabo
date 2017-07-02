@@ -6,6 +6,7 @@ import com.bibabo.framework.utils.JSONUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
+import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.reactivestreams.Publisher;
 
@@ -31,15 +32,20 @@ public class QVMovieDetailsConvert<T, F> implements Function<T, Publisher<F>> {
         String htmlString = String.valueOf(source);
         Document doc = Jsoup.parse(htmlString);
 
-        Elements pages = doc.select("div.mod_episode_filter").first().getElementsByTag("a");
-        int pageSize = pages.size();
-        if (pageSize > 0) {
-            //这里获取列表的分页信息 如 1-120；121-140
-            List<String> pagesSelect = new ArrayList<>(pageSize);
-            for (int i = 0; i < pageSize; i++) {
-                pagesSelect.add(pages.get(i).text());
+        Element filter = doc.select("div.mod_episode_filter").first();
+        if(filter != null){
+            Elements pages = filter.getElementsByTag("a");
+            int pageSize = pages.size();
+            if (pageSize > 0) {
+                //这里获取列表的分页信息 如 1-120；121-140
+                List<String> pagesSelect = new ArrayList<>(pageSize);
+                for (int i = 0; i < pageSize; i++) {
+                    pagesSelect.add(pages.get(i).text());
+                }
+                result.put(0, pagesSelect);
+            } else {
+                result.put(0, null);
             }
-            result.put(0, pagesSelect);
         } else {
             result.put(0, null);
         }

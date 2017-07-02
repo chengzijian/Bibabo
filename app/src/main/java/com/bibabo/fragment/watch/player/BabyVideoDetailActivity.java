@@ -28,7 +28,6 @@ import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.glide.ImageLoader;
 import com.bibabo.framework.utils.LogUtils;
-import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
@@ -111,15 +110,12 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
         QQListInfoResult listInfoResult = (QQListInfoResult) result.get(2);
         mAdapter.setData(listInfoResult.getData());
-//        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
-//                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
-//        LogUtils.e("getInfoUrl:", url);
-//        mWebView.loadUrl(url);
     }
 
     @Override
     public void onItemClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
         playVideoForVid(data.getVideoItem().getVid());
+        ImageLoader.loadStringRes(previewImageView, "http:"+data.getVideoItem().getPreview());
     }
 
     /**
@@ -127,7 +123,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
      * @param vid
      */
     private void playVideoForVid(String vid) {
-        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
+        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s",
                 vid, "9292fbe6a29f78d1dad9b3ad2c26c714", "", String.valueOf(System.currentTimeMillis() / 1000));
         LogUtils.e("getInfoUrl:", url);
         mWebView.loadUrl(url);
@@ -212,12 +208,14 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         mAdapter.setOnItemClickListener(this);
     }
 
+
+    private ImageView previewImageView;
     private void initPlayerVideo() {
         //增加封面
-        ImageView imageView = new ImageView(this);
-        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        imageView.setImageResource(R.mipmap.ic_launcher);
-        detailPlayer.setThumbImageView(imageView);
+        previewImageView = new ImageView(this);
+        previewImageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        previewImageView.setImageResource(R.mipmap.ic_launcher);
+        detailPlayer.setThumbImageView(previewImageView);
 
         resolveNormalVideoUI();
 
