@@ -3,16 +3,12 @@ package com.bibabo.fragment.watch.player;
 import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.QQListInfoResult;
-import com.bibabo.entity.QVMovieInfo;
-import com.bibabo.entity.VideoData;
 import com.bibabo.entity.PlayVideoData;
 import com.bibabo.httpdata.HttpData;
 import com.bibabo.resolver.QVMovieDetailsConvert;
-import com.bibabo.resolver.QVMovieListConvert;
 
 import org.reactivestreams.Subscription;
 
-import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -31,32 +27,34 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
 
     /**
      * 获取视频播放连接
-     * @param mHtmlUrl
+     */
+//    public void fetchVideoUrl(String mHtmlUrl) {
+//        HttpData.getDefault().fetchVideoUrl(mHtmlUrl)
+//                .compose(view.<PlayVideoData>bindToLife())
+//                .subscribeOn(Schedulers.io())
+//                .subscribeOn(Schedulers.newThread())//子线程访问网络
+//                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
+//                .doOnError(new Consumer<Throwable>() {
+//                    @Override
+//                    public void accept(@NonNull Throwable throwable) throws Exception {
+//                        view.error();
+//                    }
+//                })
+//                .subscribe(new Consumer<PlayVideoData>() {
+//                    @Override
+//                    public void accept(@NonNull PlayVideoData result) throws Exception {
+//                        view.playVideo(result);
+//                    }
+//                });
+//    }
+
+    /**
+     * 获取视频播放列表
+     * @param vid
      */
     @Override
-    public void fetchVideoUrl(String mHtmlUrl) {
-        HttpData.getDefault().fetchVideoUrl(mHtmlUrl)
-                .compose(view.<PlayVideoData>bindToLife())
-                .subscribeOn(Schedulers.io())
-                .subscribeOn(Schedulers.newThread())//子线程访问网络
-                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.error();
-                    }
-                })
-                .subscribe(new Consumer<PlayVideoData>() {
-                    @Override
-                    public void accept(@NonNull PlayVideoData result) throws Exception {
-                        view.playVideo(result);
-                    }
-                });
-    }
-
-    @Override
-    public void fetchQQVideoUrl(String vid) {
-        DefaultRetrofit.api().fetchQQVideoUrl(vid)
+    public void fetchVideoList(String vid) {
+        DefaultRetrofit.api().fetchVideoPlayList(vid)
                 .flatMap(new QVMovieDetailsConvert<String, Map<Integer, Object>>())
                 /*.filter(new Predicate<Object>() {
                     @Override
@@ -92,13 +90,17 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
                 .subscribe(new Consumer<Map<Integer, Object>>() {
                     @Override
                     public void accept(@NonNull Map<Integer, Object> result) throws Exception {
-                        view.fetchVideoUrlSuccess(result);
+                        view.fetchVideoInfoSuccess(result);
                     }
                 });
     }
 
+    /**
+     * 获取播放视频的信息
+     * @param mHtmlUrl
+     */
     @Override
-    public void fetchVideoInfo(String mHtmlUrl) {
+    public void fetchVideoPlayInfo(String mHtmlUrl) {
         HttpData.getDefault().fetchVideoInfo(mHtmlUrl)
                 .compose(view.<PlayVideoData>bindToLife())
                 .subscribeOn(Schedulers.io())

@@ -34,4 +34,16 @@ public class SummaryInfo {
     public void setImage(String image) {
         this.pic = image;
     }
+
+    public String getPic() {
+        return pic;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public String getDesc() {
+        return desc;
+    }
 }

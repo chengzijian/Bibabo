@@ -18,18 +18,16 @@ public class BabyVideoDetailContract {
 
         void playVideo(PlayVideoData result);
 
-        void fetchVideoUrlSuccess(Map<Integer, Object> result);
+        void fetchVideoInfoSuccess(Map<Integer, Object> result);
 
         void fetchVideoUrlSuccess(VideoData result);
     }
 
     interface Presenter extends BasePresenter<View> {
 
-        void fetchVideoUrl(String mHtmlUrl);
+        void fetchVideoList(String mHtmlUrl);
 
-        void fetchQQVideoUrl(String mHtmlUrl);
-
-        void fetchVideoInfo(String getInfoUrl);
+        void fetchVideoPlayInfo(String getInfoUrl);
 
         void fetchNextInfo(String getKeyUrl);
     }

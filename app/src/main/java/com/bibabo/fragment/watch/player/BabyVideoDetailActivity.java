@@ -13,18 +13,22 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.list.ViewHolder;
-import com.bibabo.entity.MainListDto;
 import com.bibabo.entity.PlayVideoData;
+import com.bibabo.entity.QQListInfoResult;
+import com.bibabo.entity.SummaryInfo;
 import com.bibabo.entity.VideoData;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
+import com.bibabo.framework.glide.ImageLoader;
 import com.bibabo.framework.utils.LogUtils;
+import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
@@ -47,7 +51,8 @@ import butterknife.BindView;
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
-        implements ListBaseView, BabyVideoDetailContract.View {
+        implements ListBaseView, BabyVideoDetailContract.View
+        , BaseRecyclerListAdapter.OnItemClickListener<ViewHolder, QQListInfoResult.DataBean> {
 
     public static final String INTENT_URL = "movie_vid";
 
@@ -56,6 +61,13 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     @BindView(R.id.detail_player)
     DefaultVideoPlayer detailPlayer;
+
+    @BindView(R.id.id_image_view)
+    ImageView videoImage;
+    @BindView(R.id.id_title_text)
+    TextView videoTitle;
+    @BindView(R.id.id_info_text)
+    TextView videoDesc;
 
     private VideoListAdapter mAdapter;
     private boolean isPlay;
@@ -86,8 +98,70 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
         String vid = getIntent().getStringExtra(INTENT_URL);
         if (!StringUtils.isEmpty(vid)) {
-            presenter.fetchQQVideoUrl(vid);
+            presenter.fetchVideoList(vid);
         }
+    }
+
+    @Override
+    public void fetchVideoInfoSuccess(Map<Integer, Object> result) {
+        SummaryInfo summaryInfo = (SummaryInfo) result.get(1);
+        ImageLoader.loadStringRes(videoImage, summaryInfo.getPic());
+        videoDesc.setText(summaryInfo.getDesc());
+        videoTitle.setText(summaryInfo.getTitle());
+
+        QQListInfoResult listInfoResult = (QQListInfoResult) result.get(2);
+        mAdapter.setData(listInfoResult.getData());
+//        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
+//                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
+//        LogUtils.e("getInfoUrl:", url);
+//        mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void onItemClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
+        playVideoForVid(data.getVideoItem().getVid());
+    }
+
+    /**
+     * 通过vid播放视频
+     * @param vid
+     */
+    private void playVideoForVid(String vid) {
+        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
+                vid, "9292fbe6a29f78d1dad9b3ad2c26c714", "", String.valueOf(System.currentTimeMillis() / 1000));
+        LogUtils.e("getInfoUrl:", url);
+        mWebView.loadUrl(url);
+    }
+
+    @Override
+    public boolean onItemLongClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
+        return false;
+    }
+
+    final class InJavaScriptLocalObj {
+        @JavascriptInterface
+        public void showSource(String html) {
+            //refreshHtmlContent(html);
+            LogUtils.e("", html);
+            String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
+            if (!StringUtils.isEmpty(getInfoUrl)) {
+                //https://vv.video.qq.com/getinfo?
+                presenter.fetchVideoPlayInfo(getInfoUrl);
+            } else {
+                String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
+                if (!StringUtils.isEmpty(getKeyUrl)) {
+                    //https://vv.video.qq.com/getkey?
+                    presenter.fetchNextInfo(getKeyUrl);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void playVideo(PlayVideoData result) {
+        List<GSYVideoModel> urls = new ArrayList<>();
+        urls.add(new GSYVideoModel(result.getUrl(), result.getTitle()));
+        detailPlayer.setUp(urls, 0);
     }
 
     private void initWebView() {
@@ -125,25 +199,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         //mWebView.loadUrl("file:///android_asset/qv_url.html?filename=123");
     }
 
-    final class InJavaScriptLocalObj {
-        @JavascriptInterface
-        public void showSource(String html) {
-            //refreshHtmlContent(html);
-            LogUtils.e("", html);
-            String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
-            if (!StringUtils.isEmpty(getInfoUrl)) {
-                //https://vv.video.qq.com/getinfo?
-                presenter.fetchVideoInfo(getInfoUrl);
-            } else {
-                String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
-                if (!StringUtils.isEmpty(getKeyUrl)) {
-                    //https://vv.video.qq.com/getkey?
-                    presenter.fetchNextInfo(getKeyUrl);
-                }
-            }
-        }
-    }
-
     private void initRecyclerView() {
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         mRecyclerView.setHasFixedSize(true);
@@ -154,6 +209,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         mRecyclerView.setVerticalScrollBarEnabled(false);
         mRecyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
         mRecyclerView.setAdapter(mAdapter = new VideoListAdapter());
+        mAdapter.setOnItemClickListener(this);
     }
 
     private void initPlayerVideo() {
@@ -310,26 +366,11 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void playVideo(PlayVideoData result) {
-        List<GSYVideoModel> urls = new ArrayList<>();
-        urls.add(new GSYVideoModel(result.getUrl(), result.getTitle()));
-        detailPlayer.setUp(urls, 0);
-    }
-
-    @Override
     public void fetchVideoUrlSuccess(VideoData result) {
         String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
                 result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
         LogUtils.e("getInfoUrl:", url);
         mWebView.loadUrl(url);
-    }
-
-    @Override
-    public void fetchVideoUrlSuccess(Map<Integer, Object> result) {
-//        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
-//                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
-//        LogUtils.e("getInfoUrl:", url);
-//        mWebView.loadUrl(url);
     }
 
     @Override
@@ -356,24 +397,4 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     public void error() {
 
     }
-
-    private class VideoListAdapter extends BaseRecyclerListAdapter<MainListDto, ViewHolder> {
-
-        @Override
-        public boolean setSelectableItemBackground() {
-            return false;
-        }
-
-        @Override
-        public int getItemViewLayoutId() {
-            return R.layout.item_video_list;
-        }
-
-        @Override
-        protected void convert(final ViewHolder holder, MainListDto userInfo, int position) {
-
-        }
-    }
-
-
 }

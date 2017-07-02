@@ -34,5 +34,5 @@ public interface HttpRequestApiService {
     Flowable<String> fetchQVChildrenVideoList(@Query("itype") String itype, @Query("offset") String offset);
 
     @GET(Constant.METHOD_MOVIE_LIST_PATH)
-    Flowable<String> fetchQQVideoUrl(@Path("vid") String vid);
+    Flowable<String> fetchVideoPlayList(@Path("vid") String vid);
 }
