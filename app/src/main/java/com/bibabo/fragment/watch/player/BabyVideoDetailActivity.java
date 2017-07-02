@@ -109,7 +109,15 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         videoTitle.setText(summaryInfo.getTitle());
 
         QQListInfoResult listInfoResult = (QQListInfoResult) result.get(2);
-        mAdapter.setData(listInfoResult.getData());
+        List<QQListInfoResult.DataBean> dataBeans = listInfoResult.getData();
+        if(dataBeans != null && dataBeans.size() > 0){
+            mAdapter.setData(dataBeans);
+
+            //播放视频
+            QQListInfoResult.DataBean.VideoItemBean playItem = dataBeans.get(0).getVideoItem();
+            playVideoForVid(playItem.getVid());
+            ImageLoader.loadStringRes(previewImageView, "http:"+playItem.getPreview());
+        }
     }
 
     @Override
@@ -355,7 +363,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     private void resolveNormalVideoUI() {
         //增加title
         detailPlayer.getTitleTextView().setVisibility(View.VISIBLE);
-        detailPlayer.getTitleTextView().setText("测试视频");
+        detailPlayer.getTitleTextView().setText("-");
     }
 
     @Override
