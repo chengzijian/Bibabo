@@ -6,6 +6,7 @@ import com.bibabo.entity.PlayVideoData;
 import com.bibabo.entity.VideoData;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by zijian.cheng on 2017/6/6.
@@ -17,7 +18,7 @@ public class BabyVideoDetailContract {
 
         void playVideo(PlayVideoData result);
 
-        void fetchVideoUrlSuccess(List<PlayVideoData> result);
+        void fetchVideoUrlSuccess(Map<Integer, Object> result);
 
         void fetchVideoUrlSuccess(VideoData result);
     }

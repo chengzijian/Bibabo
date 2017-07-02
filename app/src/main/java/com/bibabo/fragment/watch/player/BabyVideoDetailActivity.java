@@ -38,6 +38,7 @@ import org.jsoup.Jsoup;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import butterknife.BindView;
 
@@ -324,7 +325,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void fetchVideoUrlSuccess(List<PlayVideoData> result) {
+    public void fetchVideoUrlSuccess(Map<Integer, Object> result) {
 //        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
 //                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
 //        LogUtils.e("getInfoUrl:", url);

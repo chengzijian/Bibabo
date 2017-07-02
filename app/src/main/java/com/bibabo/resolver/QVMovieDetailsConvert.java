@@ -1,13 +1,11 @@
 package com.bibabo.resolver;
 
-import com.bibabo.entity.PlayVideoData;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.SummaryInfo;
 import com.bibabo.framework.utils.JSONUtils;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.reactivestreams.Publisher;
 
@@ -70,24 +68,6 @@ public class QVMovieDetailsConvert<T, F> implements Function<T, Publisher<F>> {
 
         QQListInfoResult qqListInfos = JSONUtils.fromJsonString(str, QQListInfoResult.class);
         result.put(2, qqListInfos);
-
-//        int size = list.size();
-//        if (size > 0) {
-//            for (int i = 0; i < size; i++) {
-//                Element element = list.get(i);
-//                Element aTag = element.select("a").first();
-//                Element iTag = aTag.select("img").first();
-//                QVMovieInfo info = new QVMovieInfo();
-//                info.setVid(aTag.attr("data-float"));
-//                info.setVideoHtmlUrl(aTag.attr("href"));
-//                info.setVpic(iTag.attr("r-lazyload").replace("//", "http://"));
-//                info.setVtitle(iTag.attr("alt"));
-//                info.setFigureInfo(aTag.select("span.figure_info").text());
-//                info.setFigureDesc(element.select("div.figure_desc").text());
-//                info.setPlayNum(element.select("span.num").text());
-//                items.add(info);
-//            }
-//        }
 
         return Flowable.just((F) result);
     }
