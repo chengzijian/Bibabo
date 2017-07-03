@@ -46,7 +46,6 @@ import java.util.Map;
 import butterknife.BindView;
 
 /**
- *
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
@@ -110,24 +109,25 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
         QQListInfoResult listInfoResult = (QQListInfoResult) result.get(2);
         List<QQListInfoResult.DataBean> dataBeans = listInfoResult.getData();
-        if(dataBeans != null && dataBeans.size() > 0){
+        if (dataBeans != null && dataBeans.size() > 0) {
             mAdapter.setData(dataBeans);
 
             //播放视频
             QQListInfoResult.DataBean.VideoItemBean playItem = dataBeans.get(0).getVideoItem();
             playVideoForVid(playItem.getVid());
-            ImageLoader.loadStringRes(previewImageView, "http:"+playItem.getPreview());
+            ImageLoader.loadStringRes(previewImageView, "http:" + playItem.getPreview());
         }
     }
 
     @Override
     public void onItemClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
         playVideoForVid(data.getVideoItem().getVid());
-        ImageLoader.loadStringRes(previewImageView, "http:"+data.getVideoItem().getPreview());
+        ImageLoader.loadStringRes(previewImageView, "http:" + data.getVideoItem().getPreview());
     }
 
     /**
      * 通过vid播放视频
+     *
      * @param vid
      */
     private void playVideoForVid(String vid) {
@@ -165,6 +165,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     public void playVideo(PlayVideoData result) {
         List<GSYVideoModel> urls = new ArrayList<>();
         urls.add(new GSYVideoModel(result.getUrl(), result.getTitle()));
+        LogUtils.e("playUrl:", result.getUrl());
         detailPlayer.setUp(urls, 0);
     }
 
@@ -218,6 +219,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
 
     private ImageView previewImageView;
+
     private void initPlayerVideo() {
         //增加封面
         previewImageView = new ImageView(this);

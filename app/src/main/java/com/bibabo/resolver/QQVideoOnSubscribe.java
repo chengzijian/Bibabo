@@ -82,7 +82,7 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
             String vkey = viBean.getFvkey();
 
             String guid = url.substring(url.indexOf("guid="));
-            guid = guid.substring(4, guid.indexOf("&"));
+            guid = guid.substring(5, guid.indexOf("&"));
             String videoUrl = String.format(playVideoUrl, playPrefix, videoName, guid, vkey);
             result.setTitle(viBean.getTi());
             result.setUrl(videoUrl);
