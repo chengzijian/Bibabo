@@ -337,6 +337,9 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
     public boolean setUp(List<CustomVideoModel> url, int position) {
         mCustomVideoList = url;
         this.mPlayPosition = position;
+        for (CustomVideoModel model : url) {
+            mUriList.add(getGSYVideoModelForCustomVideoModel(model));
+        }
         GSYVideoModel gsyVideoModel = getGSYVideoModelForCustomVideoModel(url.get(position));
         boolean set = this.setUp(gsyVideoModel.getUrl(), true, "");
         if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
