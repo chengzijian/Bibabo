@@ -2,13 +2,19 @@ package com.bibabo.fragment.watch.player;
 
 import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
+import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.PlayVideoData;
+import com.bibabo.entity.QQVideoInfo;
 import com.bibabo.httpdata.HttpData;
 import com.bibabo.resolver.QVMovieDetailsConvert;
+import com.bibabo.resolver.QVMovieNextPlayUrlConvert;
+import com.bibabo.resolver.QVMoviePlayUrlConvert;
+import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 
 import org.reactivestreams.Subscription;
 
+import java.util.List;
 import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -101,28 +107,68 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
      */
     @Override
     public void fetchVideoPlayInfo(String mHtmlUrl) {
-        HttpData.getDefault().fetchVideoInfo(mHtmlUrl)
-                .compose(view.<PlayVideoData>bindToLife())
-                .subscribeOn(Schedulers.io())
-                .subscribeOn(Schedulers.newThread())//子线程访问网络
-                .observeOn(AndroidSchedulers.mainThread())//回调到主线程
+        DefaultRetrofit.api().fetchVideoInfo(mHtmlUrl)
+                .flatMap(new QVMoviePlayUrlConvert<String, List<CustomVideoModel>>())
+                .compose(view.<List<CustomVideoModel>>bindToLife())
+                .doOnSubscribe(new Consumer<Subscription>() {
+                    @Override
+                    public void accept(@NonNull Subscription subscription) throws Exception {
+                        view.notifyLoadingStarted();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
                 .doOnError(new Consumer<Throwable>() {
                     @Override
                     public void accept(@NonNull Throwable throwable) throws Exception {
                         view.error();
                     }
                 })
-                .subscribe(new Consumer<PlayVideoData>() {
+                .doFinally(new Action() {
                     @Override
-                    public void accept(@NonNull PlayVideoData result) throws Exception {
+                    public void run() throws Exception {
+                        view.setRefresh(false);
+                        view.notifyLoadingFinished();
+                    }
+                })
+                .subscribe(new Consumer<List<CustomVideoModel>>() {
+                    @Override
+                    public void accept(@NonNull List<CustomVideoModel> result) throws Exception {
                         view.playVideo(result);
                     }
                 });
     }
 
     @Override
-    public void fetchNextInfo(String getKeyUrl) {
-
+    public void fetchNextInfo(String mHtmlUrl) {
+        DefaultRetrofit.api().fetchNextInfo(mHtmlUrl)
+                .flatMap(new QVMovieNextPlayUrlConvert<String, String>())
+                .compose(view.<String>bindToLife())
+                .doOnSubscribe(new Consumer<Subscription>() {
+                    @Override
+                    public void accept(@NonNull Subscription subscription) throws Exception {
+                        view.notifyLoadingStarted();
+                    }
+                })
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnError(new Consumer<Throwable>() {
+                    @Override
+                    public void accept(@NonNull Throwable throwable) throws Exception {
+                        view.error();
+                    }
+                })
+                .doFinally(new Action() {
+                    @Override
+                    public void run() throws Exception {
+                        view.setRefresh(false);
+                        view.notifyLoadingFinished();
+                    }
+                })
+                .subscribe(new Consumer<String>() {
+                    @Override
+                    public void accept(@NonNull String result) throws Exception {
+                        view.playNextPackVideo(result);
+                    }
+                });
     }
 
 }

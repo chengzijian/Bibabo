@@ -15,6 +15,7 @@
         var ehost = getQueryString("ehost");
         var defn = getQueryString("defn");
         var filename = getQueryString("filename");
+        var format = getQueryString("format");
 
         var _urlStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
         var d = ("" + 1).charAt(0);
@@ -50,7 +51,7 @@
 
             var keyUrl = "https://vv.video.qq.com/getkey?otype=json";
             keyUrl +="&vid="+vid;
-            keyUrl +="&format=10203";
+            keyUrl +="&format="+format;
             keyUrl +="&filename="+filename;
             keyUrl +="&platform="+platform;
             keyUrl +="&appVer=3.2.21";
@@ -74,6 +75,7 @@
             sdtfrom = sdtfrom || "v1010";
             timestamp = timestamp || parseInt(+new Date / 1e3);
             filename = filename || "";
+            format = format || "";
             var key = platform + vid + timestamp + seed + g + h + d + sdtfrom;
             var temp = tempcalc(hexToString(haha(key)), seed);
             var url = urlenc(temp, d.charAt(0), timestamp);

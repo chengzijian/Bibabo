@@ -10,12 +10,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bibabo.R;
+import com.bibabo.entity.CustomVideoModel;
+import com.bibabo.framework.config.ShowConfig;
+import com.bibabo.framework.utils.LogUtils;
+import com.bibabo.framework.utils.StringUtils;
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.video.GSYBaseVideoPlayer;
 import com.shuyu.gsyvideoplayer.video.ListGSYVideoPlayer;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,7 +39,7 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
 
     private TextView mChangeTransform;
 
-    private List<GSYVideoModel> mUrlList = new ArrayList<>();
+    private List<CustomVideoModel> mCustomVideoList = new ArrayList();
 
     //记住切换数据源类型
     private int mType = 0;
@@ -236,31 +239,6 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
         }
     }
 
-    /**
-     * 设置播放URL
-     *
-     * @param url           播放url
-     * @return
-     */
-    public boolean setUp(List<GSYVideoModel> url, int position) {
-        mUrlList = url;
-        return setUp(url, true, position, "");
-    }
-
-    /**
-     * 设置播放URL
-     *
-     * @param url           播放url
-     * @param cacheWithPlay 是否边播边缓存
-     * @param cachePath     缓存路径，如果是M3U8或者HLS，请设置为false
-     * @param objects       object[0]目前为title
-     * @return
-     */
-    public boolean setUp(List<GSYVideoModel> url, int position, boolean cacheWithPlay, File cachePath, Object... objects) {
-        mUrlList = url;
-        return setUp(url, cacheWithPlay, position, cachePath, objects);
-    }
-
     @Override
     public GSYBaseVideoPlayer startWindowFullscreen(Context context, boolean actionBar, boolean statusBar) {
         DefaultVideoPlayer sampleVideo = (DefaultVideoPlayer) super.startWindowFullscreen(context, actionBar, statusBar);
@@ -314,11 +292,11 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
     /**
      * 上一首
      */
-    public void previous(){
-        if(this.mPlayPosition < this.mUriList.size() && mPlayPosition > 0) {
+    public void previous() {
+        if (this.mPlayPosition < this.mUriList.size() && mPlayPosition > 0) {
             GSYVideoModel gsyVideoModel = this.mUriList.get(--mPlayPosition);
             this.setUp(gsyVideoModel.getUrl(), this.mCache, this.mCachePath, this.mObjects);
-            if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
+            if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
                 this.mTitleTextView.setText(gsyVideoModel.getTitle());
             }
             this.startPlayLogic();
@@ -328,14 +306,75 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
     /**
      * 下一首
      */
-    public void next(){
-        if(this.mPlayPosition < this.mUriList.size() - 1 && mPlayPosition >= 0) {
+    public void next() {
+        if (this.mPlayPosition < this.mUriList.size() - 1 && mPlayPosition >= 0) {
             GSYVideoModel gsyVideoModel = this.mUriList.get(++mPlayPosition);
             this.setUp(gsyVideoModel.getUrl(), this.mCache, this.mCachePath, this.mObjects);
-            if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
+            if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
                 this.mTitleTextView.setText(gsyVideoModel.getTitle());
             }
             this.startPlayLogic();
         }
+    }
+
+    public static final String PLAY_VIDEO_URL = "%1$s%2$s?sdtfrom=v1010&guid=%3$s&vkey=%4$s#t=66";
+    private String playPrefix;
+
+    private GSYVideoModel getGSYVideoModelForCustomVideoModel(CustomVideoModel model) {
+        playPrefix = model.getPlayPrefix();
+        String keyid = model.getKeyid();
+        String guid = ShowConfig.GUID;
+
+        String vkey = model.getFvkey();
+        if (StringUtils.isEmpty(vkey)) {
+            LogUtils.e("", "vkey is null");
+        }
+        String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
+        LogUtils.e("videoUrl:", videoUrl);
+        return new GSYVideoModel(videoUrl, model.getTitle());
+    }
+
+    public boolean setUp(List<CustomVideoModel> url, int position) {
+        mCustomVideoList = url;
+        this.mPlayPosition = position;
+        GSYVideoModel gsyVideoModel = getGSYVideoModelForCustomVideoModel(url.get(position));
+        boolean set = this.setUp(gsyVideoModel.getUrl(), true, "");
+        if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
+            this.mTitleTextView.setText(gsyVideoModel.getTitle());
+        }
+        return set;
+    }
+
+    public void onAutoCompletion() {
+        if (this.mPlayPosition < this.mCustomVideoList.size() - 1) {
+            ++this.mPlayPosition;
+            if (mFetchNextPackVkey != null) {
+                mFetchNextPackVkey.fetchVkey(this.mCustomVideoList.get(this.mPlayPosition));
+            }
+        } else {
+            super.onAutoCompletion();
+        }
+    }
+
+    private FetchNextPackVkey mFetchNextPackVkey;
+
+    public void setFetchNextPackVkey(FetchNextPackVkey mFetchNextPackVkey) {
+        this.mFetchNextPackVkey = mFetchNextPackVkey;
+    }
+
+    public interface FetchNextPackVkey {
+        void fetchVkey(CustomVideoModel model);
+    }
+
+    public void playNextPackVideo(GSYVideoModel gsyVideoModel) {
+        String url = gsyVideoModel.getUrl();
+        if (!StringUtils.isEmpty(playPrefix)) {
+            url = playPrefix + url;
+        }
+        this.setUp(url, this.mCache, this.mCachePath, this.mObjects);
+        if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
+            this.mTitleTextView.setText(gsyVideoModel.getTitle());
+        }
+        this.startPlayLogic();
     }
 }

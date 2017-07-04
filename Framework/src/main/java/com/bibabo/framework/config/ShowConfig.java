@@ -15,6 +15,9 @@ import java.io.File;
 public class ShowConfig {
 
     public static final int DEFAULT_PAGE_SIZE = 30;
+
+    public static final String GUID = "9292fbe6a29f78d1dad9b3ad2c26c714";
+
 //    /**
 //     * 链接url *
 //     */

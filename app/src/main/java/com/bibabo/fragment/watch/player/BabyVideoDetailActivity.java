@@ -20,10 +20,11 @@ import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.list.ViewHolder;
-import com.bibabo.entity.PlayVideoData;
+import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.SummaryInfo;
 import com.bibabo.entity.VideoData;
+import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.glide.ImageLoader;
@@ -39,13 +40,15 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
 import org.jsoup.Jsoup;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 import butterknife.BindView;
 
+import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
+
 /**
+ *
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
@@ -132,8 +135,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
      */
     private void playVideoForVid(String vid) {
         String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s",
-                vid, "9292fbe6a29f78d1dad9b3ad2c26c714", "", String.valueOf(System.currentTimeMillis() / 1000));
-        LogUtils.e("getInfoUrl:", url);
+                vid, ShowConfig.GUID, "", String.valueOf(System.currentTimeMillis() / 1000));
         mWebView.loadUrl(url);
     }
 
@@ -145,16 +147,17 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     final class InJavaScriptLocalObj {
         @JavascriptInterface
         public void showSource(String html) {
-            //refreshHtmlContent(html);
-            LogUtils.e("", html);
             String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
             if (!StringUtils.isEmpty(getInfoUrl)) {
                 //https://vv.video.qq.com/getinfo?
+                //refreshHtmlContent(html);
+                LogUtils.e("getInfoUrl：", getInfoUrl);
                 presenter.fetchVideoPlayInfo(getInfoUrl);
             } else {
                 String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
                 if (!StringUtils.isEmpty(getKeyUrl)) {
                     //https://vv.video.qq.com/getkey?
+                    LogUtils.e("nextVideoUrlKey:", getKeyUrl);
                     presenter.fetchNextInfo(getKeyUrl);
                 }
             }
@@ -162,11 +165,8 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void playVideo(PlayVideoData result) {
-        List<GSYVideoModel> urls = new ArrayList<>();
-        urls.add(new GSYVideoModel(result.getUrl(), result.getTitle()));
-        LogUtils.e("playUrl:", result.getUrl());
-        detailPlayer.setUp(urls, 0);
+    public void playVideo(List<CustomVideoModel> list) {
+        detailPlayer.setUp(list, 0);
     }
 
     private void initWebView() {
@@ -201,7 +201,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
         });
 
-        //mWebView.loadUrl("file:///android_asset/qv_url.html?filename=123");
     }
 
     private void initRecyclerView() {
@@ -302,6 +301,29 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
                 }
             }
         });
+
+        detailPlayer.setFetchNextPackVkey(new DefaultVideoPlayer.FetchNextPackVkey() {
+            @Override
+            public void fetchVkey(CustomVideoModel model) {
+                String playPrefix = model.getPlayPrefix();
+                String keyid = model.getKeyid();
+                String guid = ShowConfig.GUID;
+
+                String vkey = model.getFvkey();
+                if (StringUtils.isEmpty(vkey)) {
+                    String keyId = model.getKeyid();
+                    String format = keyid.substring(keyId.indexOf(".p") + 2);
+                    format = "10" + format.substring(0, format.indexOf("."));
+                    String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&filename=%3$s&timestamp=%4$s&format=%5$s",
+                            model.getVid(), ShowConfig.GUID, keyId, String.valueOf(System.currentTimeMillis() / 1000), format);
+                    mWebView.loadUrl(url);
+                } else {
+                    String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
+                    LogUtils.e("videoUrl:", videoUrl);
+                    detailPlayer.playNextPackVideo(new GSYVideoModel(videoUrl, model.getTitle()));
+                }
+            }
+        });
     }
 
     @Override
@@ -379,6 +401,12 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
                 result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
         LogUtils.e("getInfoUrl:", url);
         mWebView.loadUrl(url);
+    }
+
+    @Override
+    public void playNextPackVideo(String videoUrl) {
+        LogUtils.e("videoUrl:", videoUrl);
+        detailPlayer.playNextPackVideo(new GSYVideoModel(videoUrl, null));
     }
 
     @Override

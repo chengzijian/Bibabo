@@ -5,6 +5,7 @@ import com.bibabo.api.OkHttp3Utils;
 import com.bibabo.entity.PlayVideoData;
 import com.bibabo.entity.QQVideoInfo;
 import com.bibabo.entity.VideoData;
+import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.utils.JSONUtils;
 import com.bibabo.framework.utils.LogUtils;
 
@@ -94,7 +95,7 @@ public class QQVideoOnSubscribe<T> implements FlowableOnSubscribe<T> {
             Document doc = Jsoup.parse(source);
             Elements list = doc.select("link");
             //result.setGuid(createGuid());
-            result.setGuid("9292fbe6a29f78d1dad9b3ad2c26c714");
+            result.setGuid(ShowConfig.GUID);
             for (Element link : list) {
                 if (link.attr("rel").equals("canonical")) {
                     String ehost = link.attr("href");

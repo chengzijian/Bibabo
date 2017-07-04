@@ -24,6 +24,7 @@ import io.reactivex.Flowable;
 import retrofit2.http.GET;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
+import retrofit2.http.Url;
 
 /**
  *
@@ -35,4 +36,10 @@ public interface HttpRequestApiService {
 
     @GET(Constant.METHOD_MOVIE_LIST_PATH)
     Flowable<String> fetchVideoPlayList(@Path("vid") String vid);
+
+    @GET
+    Flowable<String> fetchVideoInfo(@Url String mHtmlUrl);
+
+    @GET
+    Flowable<String> fetchNextInfo(@Url String mHtmlUrl);
 }
