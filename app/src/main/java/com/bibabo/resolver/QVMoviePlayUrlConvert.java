@@ -23,8 +23,7 @@ public class QVMoviePlayUrlConvert<T, F> implements Function<T, Publisher<F>> {
     @Override
     public Publisher<F> apply(@NonNull T source) throws Exception {
         String htmlString = String.valueOf(source);
-        htmlString = htmlString.replace("QZOutputJson=", "").replace(";", "");
-        LogUtils.e("playUrls:", htmlString);
+        htmlString = htmlString.substring(htmlString.indexOf("{"), htmlString.lastIndexOf("}") + 1);
         QQVideoInfo treasure = JSONUtils.fromJsonString(htmlString, QQVideoInfo.class);
 
         List<CustomVideoModel> result = new ArrayList<>();
@@ -38,7 +37,7 @@ public class QVMoviePlayUrlConvert<T, F> implements Function<T, Publisher<F>> {
         if (ciBeen != null && ciBeen.size() > 0) {
             for (int i = 0; i < ciBeen.size(); i++) {
                 CustomVideoModel model;
-                if(i == 0){
+                if (i == 0) {
                     model = new CustomVideoModel(vid, playPrefix, title, viBean.getFvkey(), ciBeen.get(i).getKeyid(), ciBeen.get(i).getCd(), td);
                 } else {
                     model = new CustomVideoModel(vid, playPrefix, title, null, ciBeen.get(i).getKeyid(), ciBeen.get(i).getCd(), td);

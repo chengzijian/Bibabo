@@ -14,6 +14,8 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bibabo.R;
+import com.bibabo.activity.StandardActivity;
+import com.bibabo.activity.playvideo.PlayMovieActivity;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.TabEntity;
 import com.bibabo.framework.BaseApplication;
@@ -208,6 +210,8 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
 
         } else if (id == R.id.nav_manage) {
 
+        } else if(id == R.id.nav_vip_video){
+            PlayMovieActivity.launch(getContext());
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);

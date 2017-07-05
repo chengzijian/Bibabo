@@ -17,6 +17,7 @@ public class ShowConfig {
     public static final int DEFAULT_PAGE_SIZE = 30;
 
     public static final String GUID = "9292fbe6a29f78d1dad9b3ad2c26c714";
+    public static final String GET_INFO = "file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s";
 
 //    /**
 //     * 链接url *

@@ -23,8 +23,6 @@ public class BabyVideoDetailContract {
 
         void fetchVideoInfoSuccess(Map<Integer, Object> result);
 
-        void fetchVideoUrlSuccess(VideoData result);
-
         void playNextPackVideo(String result);
     }
 

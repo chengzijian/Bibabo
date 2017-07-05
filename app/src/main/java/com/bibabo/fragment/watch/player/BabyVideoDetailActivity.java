@@ -4,14 +4,11 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.webkit.JavascriptInterface;
-import android.webkit.WebView;
-import android.webkit.WebViewClient;
 import android.widget.ImageView;
 import android.widget.TextView;
 
@@ -88,14 +85,16 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         return R.layout.fragment_video_detail;
     }
 
-    private WebView mWebView;
+    @Override
+    protected boolean needWebViewService() {
+        return true;
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         initRecyclerView();
         initPlayerVideo();
-        initWebView();
 
         String vid = getIntent().getStringExtra(INTENT_URL);
         if (!StringUtils.isEmpty(vid)) {
@@ -136,7 +135,18 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     private void playVideoForVid(String vid) {
         String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s",
                 vid, ShowConfig.GUID, "", String.valueOf(System.currentTimeMillis() / 1000));
-        mWebView.loadUrl(url);
+        loadLocalUrl(url, new InJavaScriptLocalObj(){
+            @Override
+            @JavascriptInterface
+            public void showSource(String html) {
+                String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
+                if (!StringUtils.isEmpty(getInfoUrl)) {
+                    //https://vv.video.qq.com/getinfo?
+                    LogUtils.e("getInfoUrl：", getInfoUrl);
+                    presenter.fetchVideoPlayInfo(getInfoUrl);
+                }
+            }
+        });
     }
 
     @Override
@@ -144,63 +154,9 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         return false;
     }
 
-    final class InJavaScriptLocalObj {
-        @JavascriptInterface
-        public void showSource(String html) {
-            String getInfoUrl = Jsoup.parse(html).getElementById("get_info_div").text();
-            if (!StringUtils.isEmpty(getInfoUrl)) {
-                //https://vv.video.qq.com/getinfo?
-                //refreshHtmlContent(html);
-                LogUtils.e("getInfoUrl：", getInfoUrl);
-                presenter.fetchVideoPlayInfo(getInfoUrl);
-            } else {
-                String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
-                if (!StringUtils.isEmpty(getKeyUrl)) {
-                    //https://vv.video.qq.com/getkey?
-                    LogUtils.e("nextVideoUrlKey:", getKeyUrl);
-                    presenter.fetchNextInfo(getKeyUrl);
-                }
-            }
-        }
-    }
-
     @Override
     public void playVideo(List<CustomVideoModel> list) {
         detailPlayer.setUp(list, 0);
-    }
-
-    private void initWebView() {
-        mWebView = new WebView(getContext());
-        //下面三行设置主要是为了待webView成功加载html网页之后，我们能够通过webView获取到具体的html字符串
-        mWebView.getSettings().setJavaScriptEnabled(true);
-        mWebView.addJavascriptInterface(new InJavaScriptLocalObj(), "local_obj");
-        mWebView.setWebViewClient(new WebViewClient() {
-            @Override
-            public void onPageStarted(WebView view, String url, Bitmap favicon) {
-                super.onPageStarted(view, url, favicon);
-            }
-
-            @Override
-            public boolean shouldOverrideUrlLoading(WebView view, String url) {
-                view.loadUrl(url);
-                return true;
-            }
-
-            @Override
-            public void onPageFinished(WebView view, String url) {
-                super.onPageFinished(view, url);
-                view.loadUrl("javascript:window.local_obj.showSource('<body>'+"
-                        + "document.getElementsByTagName('body')[0].innerHTML+'</body>');");
-            }
-
-            @Override
-            public void onReceivedError(WebView view, int errorCode,
-                                        String description, String failingUrl) {
-                super.onReceivedError(view, errorCode, description, failingUrl);
-            }
-
-        });
-
     }
 
     private void initRecyclerView() {
@@ -316,7 +272,18 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
                     format = "10" + format.substring(0, format.indexOf("."));
                     String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&filename=%3$s&timestamp=%4$s&format=%5$s",
                             model.getVid(), ShowConfig.GUID, keyId, String.valueOf(System.currentTimeMillis() / 1000), format);
-                    mWebView.loadUrl(url);
+                    loadLocalUrl(url, new InJavaScriptLocalObj(){
+                        @Override
+                        @JavascriptInterface
+                        public void showSource(String html) {
+                            String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
+                            if (!StringUtils.isEmpty(getKeyUrl)) {
+                                //https://vv.video.qq.com/getkey?
+                                LogUtils.e("nextVideoUrlKey:", getKeyUrl);
+                                presenter.fetchNextInfo(getKeyUrl);
+                            }
+                        }
+                    });
                 } else {
                     String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
                     LogUtils.e("videoUrl:", videoUrl);
@@ -353,11 +320,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mWebView != null) {
-            mWebView.removeAllViews();
-            mWebView.destroy();
-            mWebView = null;
-        }
         GSYVideoPlayer.releaseAllVideos();
         if (orientationUtils != null)
             orientationUtils.releaseListener();
@@ -393,14 +355,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     protected FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultHorizontalAnimator();
-    }
-
-    @Override
-    public void fetchVideoUrlSuccess(VideoData result) {
-        String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=shd&ehost=%3$s&timestamp=%4$s",
-                result.getVid(), result.getGuid(), result.getEhost(), String.valueOf(System.currentTimeMillis() / 1000));
-        LogUtils.e("getInfoUrl:", url);
-        mWebView.loadUrl(url);
     }
 
     @Override

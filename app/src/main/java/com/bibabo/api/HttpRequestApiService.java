@@ -38,8 +38,5 @@ public interface HttpRequestApiService {
     Flowable<String> fetchVideoPlayList(@Path("vid") String vid);
 
     @GET
-    Flowable<String> fetchVideoInfo(@Url String mHtmlUrl);
-
-    @GET
-    Flowable<String> fetchNextInfo(@Url String mHtmlUrl);
+    Flowable<String> fetchFullUrlInfo(@Url String url);
 }

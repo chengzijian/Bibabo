@@ -374,6 +374,7 @@ public class DefaultVideoPlayer extends ListGSYVideoPlayer {
         if (!StringUtils.isEmpty(playPrefix)) {
             url = playPrefix + url;
         }
+        LogUtils.e("playNextPackVideo:", url);
         this.setUp(url, this.mCache, this.mCachePath, this.mObjects);
         if (!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
             this.mTitleTextView.setText(gsyVideoModel.getTitle());
