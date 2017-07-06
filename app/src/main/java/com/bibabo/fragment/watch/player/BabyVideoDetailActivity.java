@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
@@ -58,12 +57,12 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @BindView(R.id.detail_player)
     DefaultVideoPlayer detailPlayer;
 
-    @BindView(R.id.id_image_view)
-    ImageView videoImage;
-    @BindView(R.id.id_title_text)
-    TextView videoTitle;
-    @BindView(R.id.id_info_text)
-    TextView videoDesc;
+//    @BindView(R.id.id_image_view)
+//    ImageView videoImage;
+//    @BindView(R.id.id_title_text)
+//    TextView videoTitle;
+//    @BindView(R.id.id_info_text)
+//    TextView videoDesc;
 
     private VideoListAdapter mAdapter;
     private boolean isPlay;
@@ -102,10 +101,10 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     @Override
     public void fetchVideoInfoSuccess(VideoDetailsInfo result) {
-        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
+//        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
         ImageLoader.loadStringRes(previewImageView, "http:" + result.getPic());
-        videoDesc.setText(result.getSecTitle());
-        videoTitle.setText(result.getTitle());
+//        videoDesc.setText(result.getSecTitle());
+//        videoTitle.setText(result.getTitle());
 
         QQListInfoResult listInfo = result.getListInfo();
         if(listInfo != null){

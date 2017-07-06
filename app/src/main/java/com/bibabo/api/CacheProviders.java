@@ -27,23 +27,4 @@ public interface CacheProviders {
     //缓存时间 4小时
     @LifeCache(duration = 4, timeUnit = TimeUnit.HOURS)
     <T> Flowable<Reply<T>> getCacheDataHours(Flowable<T> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
-
-//    //获取书库分类信息缓存数据 缓存时间 永久
-//    Observable<Reply<List<BookTypeDto>>> getTypeList(Observable<List<BookTypeDto>> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
-//
-//    //获取首页配置数据 banner 最热 最新  缓存时间7天
-//    @LifeCache(duration = 7, timeUnit = TimeUnit.DAYS)
-//    Observable<Reply<HomeDto>> getHomeInfo(Observable<HomeDto> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
-//
-//    //获取搜索标签  缓存时间7天
-//    @LifeCache(duration = 7, timeUnit = TimeUnit.DAYS)
-//    Observable<Reply<List<String>>> getHotLable(Observable<List<String>> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
-//
-//    //获取书籍详情  缓存时间7天
-//    @LifeCache(duration = 7, timeUnit = TimeUnit.DAYS)
-//    Observable<Reply<BookInfoDto>> getBookInfo(Observable<BookInfoDto> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
-//
-//    //根据关键词获取搜素列表  缓存时间1天
-//    @LifeCache(duration = 1, timeUnit = TimeUnit.DAYS)
-//    Observable<Reply<BookInfoListDto>> getSearchList(Observable<BookInfoListDto> oRepos, DynamicKey userName, EvictDynamicKey evictDynamicKey);
 }

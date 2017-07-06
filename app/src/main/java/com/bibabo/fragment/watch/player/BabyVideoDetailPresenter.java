@@ -1,18 +1,17 @@
 package com.bibabo.fragment.watch.player;
 
 import com.bibabo.api.DefaultRetrofit;
+import com.bibabo.api.RepositoryRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.VideoDetailsInfo;
-import com.bibabo.resolver.QVVideoDetailsResolver;
 import com.bibabo.resolver.QVMovieNextPlayUrlConvert;
 import com.bibabo.resolver.QVMoviePlayUrlConvert;
 
 import org.reactivestreams.Subscription;
 
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;
@@ -32,18 +31,7 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
      */
     @Override
     public void fetchVideoList(String vid) {
-        DefaultRetrofit.api().fetchVideoPlayList(vid)
-                .flatMap(new QVVideoDetailsResolver<String, VideoDetailsInfo>())
-                /*.filter(new Predicate<Object>() {
-                    @Override
-                    public boolean test(Object city) throws Exception {
-                        String id = city.getId();
-                        if(Integer.parseInt(id)<5){
-                            return true;
-                        }
-                        return false;
-                    }
-                })*/
+        RepositoryRetrofit.api().<VideoDetailsInfo>fetchVideoPlayList(vid)
                 .compose(view.<VideoDetailsInfo>bindToLife())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override

@@ -55,7 +55,7 @@ public class QVVideoDetailsResolver<T, F> implements Function<T, Publisher<F>> {
             } else if(title.equals("VPP_INFO")){
                 continue;
             } else if(title.equals("LIST_INFO")){
-                String str = replaceAllShow(info, "[^\\]\\{]*(\":\\{\"v)", "\\}\\}, \\{\"videoItem\":\\{\"v");
+                String str = replaceAllShow(info, "[^\\]\\{]*(\":\\{\"vid\":)", "\\}\\}, \\{\"videoItem\":\\{\"vid\":");
                 str = str.replace("{}},", "[").replace("}}}", "}}]}");
                 QQListInfoResult videoListInfo = JSONUtils.fromJsonString(str, QQListInfoResult.class);
                 result.setListInfo(videoListInfo);
