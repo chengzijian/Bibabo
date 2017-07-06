@@ -4,7 +4,6 @@ import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.mvp.BasePresenterImpl;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.MovieCoverInfo;
-import com.bibabo.resolver.QVMovieDetailsConvert;
 import com.bibabo.resolver.QVMovieNextPlayUrlConvert;
 import com.bibabo.resolver.QVMoviePlayUrlConvert;
 import com.bibabo.resolver.VipVideoHtmlResolver;
@@ -12,7 +11,6 @@ import com.bibabo.resolver.VipVideoHtmlResolver;
 import org.reactivestreams.Subscription;
 
 import java.util.List;
-import java.util.Map;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.annotations.NonNull;

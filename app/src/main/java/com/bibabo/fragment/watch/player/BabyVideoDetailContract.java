@@ -6,6 +6,7 @@ import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.PlayVideoData;
 import com.bibabo.entity.QQVideoInfo;
 import com.bibabo.entity.VideoData;
+import com.bibabo.entity.VideoDetailsInfo;
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public class BabyVideoDetailContract {
 
         void playVideo(List<CustomVideoModel> list);
 
-        void fetchVideoInfoSuccess(Map<Integer, Object> result);
+        void fetchVideoInfoSuccess(VideoDetailsInfo result);
 
         void playNextPackVideo(String result);
     }

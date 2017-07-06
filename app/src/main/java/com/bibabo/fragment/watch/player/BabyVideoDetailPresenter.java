@@ -4,7 +4,8 @@ import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
-import com.bibabo.resolver.QVMovieDetailsConvert;
+import com.bibabo.entity.VideoDetailsInfo;
+import com.bibabo.resolver.QVVideoDetailsResolver;
 import com.bibabo.resolver.QVMovieNextPlayUrlConvert;
 import com.bibabo.resolver.QVMoviePlayUrlConvert;
 
@@ -32,7 +33,7 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
     @Override
     public void fetchVideoList(String vid) {
         DefaultRetrofit.api().fetchVideoPlayList(vid)
-                .flatMap(new QVMovieDetailsConvert<String, Map<Integer, Object>>())
+                .flatMap(new QVVideoDetailsResolver<String, VideoDetailsInfo>())
                 /*.filter(new Predicate<Object>() {
                     @Override
                     public boolean test(Object city) throws Exception {
@@ -43,7 +44,7 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
                         return false;
                     }
                 })*/
-                .compose(view.<Map<Integer, Object>>bindToLife())
+                .compose(view.<VideoDetailsInfo>bindToLife())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override
                     public void accept(@NonNull Subscription subscription) throws Exception {
@@ -64,9 +65,9 @@ public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDet
                         view.notifyLoadingFinished();
                     }
                 })
-                .subscribe(new Consumer<Map<Integer, Object>>() {
+                .subscribe(new Consumer<VideoDetailsInfo>() {
                     @Override
-                    public void accept(@NonNull Map<Integer, Object> result) throws Exception {
+                    public void accept(@NonNull VideoDetailsInfo result) throws Exception {
                         view.fetchVideoInfoSuccess(result);
                     }
                 });

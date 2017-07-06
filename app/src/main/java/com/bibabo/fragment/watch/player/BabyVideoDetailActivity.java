@@ -19,8 +19,7 @@ import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
-import com.bibabo.entity.SummaryInfo;
-import com.bibabo.entity.VideoData;
+import com.bibabo.entity.VideoDetailsInfo;
 import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
 import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
@@ -38,7 +37,6 @@ import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 import org.jsoup.Jsoup;
 
 import java.util.List;
-import java.util.Map;
 
 import butterknife.BindView;
 
@@ -103,22 +101,22 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public void fetchVideoInfoSuccess(Map<Integer, Object> result) {
-        SummaryInfo summaryInfo = (SummaryInfo) result.get(1);
-        ImageLoader.loadStringRes(videoImage, summaryInfo.getPic());
-        videoDesc.setText(summaryInfo.getDesc());
-        videoTitle.setText(summaryInfo.getTitle());
+    public void fetchVideoInfoSuccess(VideoDetailsInfo result) {
+        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
+        ImageLoader.loadStringRes(previewImageView, "http:" + result.getPic());
+        videoDesc.setText(result.getSecTitle());
+        videoTitle.setText(result.getTitle());
 
-        QQListInfoResult listInfoResult = (QQListInfoResult) result.get(2);
-        List<QQListInfoResult.DataBean> dataBeans = listInfoResult.getData();
-        if (dataBeans != null && dataBeans.size() > 0) {
-            mAdapter.setData(dataBeans);
-
-            //播放视频
-            QQListInfoResult.DataBean.VideoItemBean playItem = dataBeans.get(0).getVideoItem();
-            playVideoForVid(playItem.getVid());
-            ImageLoader.loadStringRes(previewImageView, "http:" + playItem.getPreview());
+        QQListInfoResult listInfo = result.getListInfo();
+        if(listInfo != null){
+            List<QQListInfoResult.DataBean> dataBeans = listInfo.getData();
+            if (dataBeans != null && dataBeans.size() > 0) {
+                mAdapter.setData(dataBeans);
+            }
         }
+
+        //播放视频
+        playVideoForVid(result.getCurrVideoVid());
     }
 
     @Override
