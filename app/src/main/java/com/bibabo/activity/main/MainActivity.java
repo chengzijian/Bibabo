@@ -3,7 +3,6 @@ package com.bibabo.activity.main;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.support.design.widget.NavigationView;
@@ -14,13 +13,10 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.bibabo.R;
-import com.bibabo.activity.StandardActivity;
 import com.bibabo.activity.playvideo.PlayMovieActivity;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.TabEntity;
 import com.bibabo.framework.BaseApplication;
-import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
-import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.utils.PromptUtils;
 import com.flyco.tablayout.CommonTabLayout;
 import com.flyco.tablayout.listener.CustomTabEntity;
@@ -29,6 +25,8 @@ import com.flyco.tablayout.listener.OnTabSelectListener;
 import java.util.ArrayList;
 
 import butterknife.BindView;
+import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresenter>
         implements MainContract.View, NavigationView.OnNavigationItemSelectedListener {
@@ -225,7 +223,7 @@ public class MainActivity extends MVPBaseActivity<MainContract.View, MainPresent
     }
 
     @Override
-    protected FragmentAnimator onCreateFragmentAnimator() {
+    public FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultHorizontalAnimator();
     }
 }

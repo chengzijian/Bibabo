@@ -5,24 +5,17 @@ import android.content.Intent;
 import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
-import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseView;
-import com.bibabo.base.list.ViewHolder;
 import com.bibabo.entity.CustomVideoModel;
-import com.bibabo.entity.QQListInfoResult;
-import com.bibabo.entity.VideoDetailsInfo;
+import com.bibabo.fragment.watch.player.detail.VideoDetailFragment;
 import com.bibabo.framework.config.ShowConfig;
-import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
-import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
-import com.bibabo.framework.glide.ImageLoader;
+import com.bibabo.framework.fragmentation.SupportFragment;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.widget.DefaultVideoPlayer;
@@ -38,6 +31,8 @@ import org.jsoup.Jsoup;
 import java.util.List;
 
 import butterknife.BindView;
+import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
 
@@ -46,29 +41,20 @@ import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
  * Created by zijian.cheng on 2017/6/16.
  */
 public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailContract.View, BabyVideoDetailPresenter>
-        implements ListBaseView, BabyVideoDetailContract.View
-        , BaseRecyclerListAdapter.OnItemClickListener<ViewHolder, QQListInfoResult.DataBean> {
+        implements ListBaseView, BabyVideoDetailContract.View {
 
     public static final String INTENT_URL = "movie_vid";
-
-    @BindView(R.id.id_recycler_view)
-    RecyclerView mRecyclerView;
 
     @BindView(R.id.detail_player)
     DefaultVideoPlayer detailPlayer;
 
-//    @BindView(R.id.id_image_view)
-//    ImageView videoImage;
-//    @BindView(R.id.id_title_text)
-//    TextView videoTitle;
-//    @BindView(R.id.id_info_text)
-//    TextView videoDesc;
+    private ImageView previewImageView;
 
-    private VideoListAdapter mAdapter;
+    private SupportFragment mDetailFragment;
+    private OrientationUtils orientationUtils;
+
     private boolean isPlay;
     private boolean isPause;
-
-    private OrientationUtils orientationUtils;
 
     public static void launch(Context context, String vid) {
         Intent intent = new Intent();
@@ -79,7 +65,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     @Override
     protected int provideContentViewId() {
-        return R.layout.fragment_video_detail;
+        return R.layout.activity_video_detail;
     }
 
     @Override
@@ -90,38 +76,16 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        initRecyclerView();
-        initPlayerVideo();
-
         String vid = getIntent().getStringExtra(INTENT_URL);
-        if (!StringUtils.isEmpty(vid)) {
-            presenter.fetchVideoList(vid);
+        if (savedInstanceState != null) {
+            mDetailFragment = (SupportFragment) getSupportFragmentManager().getFragment(
+                    savedInstanceState, "fragment");
         }
-    }
-
-    @Override
-    public void fetchVideoInfoSuccess(VideoDetailsInfo result) {
-//        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
-        ImageLoader.loadStringRes(previewImageView, "http:" + result.getPic());
-//        videoDesc.setText(result.getSecTitle());
-//        videoTitle.setText(result.getTitle());
-
-        QQListInfoResult listInfo = result.getListInfo();
-        if(listInfo != null){
-            List<QQListInfoResult.DataBean> dataBeans = listInfo.getData();
-            if (dataBeans != null && dataBeans.size() > 0) {
-                mAdapter.setData(dataBeans);
-            }
+        if (mDetailFragment == null) {
+            mDetailFragment = VideoDetailFragment.newInstance(vid);
         }
-
-        //播放视频
-        playVideoForVid(result.getCurrVideoVid());
-    }
-
-    @Override
-    public void onItemClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
-        playVideoForVid(data.getVideoItem().getVid());
-        ImageLoader.loadStringRes(previewImageView, "http:" + data.getVideoItem().getPreview());
+        loadRootFragment(R.id.fl_container, mDetailFragment);
+        initPlayerVideo();
     }
 
     /**
@@ -147,30 +111,9 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    public boolean onItemLongClick(View view, ViewHolder holder, QQListInfoResult.DataBean data) {
-        return false;
-    }
-
-    @Override
     public void playVideo(List<CustomVideoModel> list) {
         detailPlayer.setUp(list, 0);
     }
-
-    private void initRecyclerView() {
-        //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
-        mRecyclerView.setHasFixedSize(true);
-        mRecyclerView.setNestedScrollingEnabled(false);
-        mRecyclerView.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
-        mRecyclerView.setItemAnimator(null);
-        mRecyclerView.setFadingEdgeLength(0);
-        mRecyclerView.setVerticalScrollBarEnabled(false);
-        mRecyclerView.setOverScrollMode(RecyclerView.OVER_SCROLL_NEVER);
-        mRecyclerView.setAdapter(mAdapter = new VideoListAdapter());
-        mAdapter.setOnItemClickListener(this);
-    }
-
-
-    private ImageView previewImageView;
 
     private void initPlayerVideo() {
         //增加封面
@@ -350,7 +293,7 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     }
 
     @Override
-    protected FragmentAnimator onCreateFragmentAnimator() {
+    public FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultHorizontalAnimator();
     }
 

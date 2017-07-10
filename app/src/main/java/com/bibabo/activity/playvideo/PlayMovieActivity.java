@@ -11,13 +11,10 @@ import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.MovieCoverInfo;
 import com.bibabo.framework.config.ShowConfig;
-import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
-import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.videoplayer.JCVideoPlayer;
-import com.bibabo.videoplayer.JCVideoPlayerStandard;
 import com.bibabo.widget.DefaultVideoPlayer;
 import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 
@@ -27,6 +24,8 @@ import java.util.List;
 
 import butterknife.BindView;
 import butterknife.OnClick;
+import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
 
@@ -180,7 +179,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
     }
 
     @Override
-    protected FragmentAnimator onCreateFragmentAnimator() {
+    public FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultHorizontalAnimator();
     }
 }

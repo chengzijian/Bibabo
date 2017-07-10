@@ -57,6 +57,10 @@ dependencies {
     compile 'com.flyco.tablayout:FlycoTabLayout_Lib:2.0.0@aar'
     compile 'org.jsoup:jsoup:1.10.3'
     compile 'com.github.CarGuo:GSYVideoPlayer:v1.6.6'
+    // To get SwipeBack feature, rely on both fragmentation & fragmentation-swipeback
+    compile 'me.yokeyword:fragmentation:1.0.6'
+    // Swipeback is based on fragmentation. Refer to SwipeBackActivity/Fragment for your Customized SupportActivity/Fragment
+    compile 'me.yokeyword:fragmentation-swipeback:1.0.6'
     compile deps.appcompat
     compile deps.constraint
     compile deps.design

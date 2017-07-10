@@ -43,9 +43,7 @@ public class RepositoryRetrofit {
     public <T> Flowable<T> fetchVideoPlayList(String vid) {
         return providers.getCacheData(DefaultRetrofit.api().fetchVideoPlayList(vid)
                         .flatMap(new QVVideoDetailsResolver<String, T>())
-                , new DynamicKey(vid)
-                , new EvictDynamicKey(false))
-                .map(new HttpResultFuncCcche<T>());
+                , new DynamicKey(vid), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<T>());
     }
 
     /**

@@ -14,10 +14,6 @@ import android.widget.TextView;
 import com.bibabo.R;
 import com.bibabo.framework.fragmentation.SupportFragment;
 
-import java.lang.reflect.Method;
-import java.util.HashMap;
-import java.util.Map;
-
 import butterknife.BindColor;
 import butterknife.BindView;
 import butterknife.ButterKnife;

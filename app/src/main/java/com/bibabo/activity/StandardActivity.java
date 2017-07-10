@@ -6,8 +6,9 @@ import android.os.Bundle;
 
 import com.bibabo.R;
 import com.bibabo.base.BaseActivity;
-import com.bibabo.framework.fragmentation.anim.DefaultHorizontalAnimator;
-import com.bibabo.framework.fragmentation.anim.FragmentAnimator;
+
+import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
+import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 /**
  *
@@ -37,7 +38,7 @@ public class StandardActivity extends BaseActivity {
     }
 
     @Override
-    protected FragmentAnimator onCreateFragmentAnimator() {
+    public FragmentAnimator onCreateFragmentAnimator() {
         return new DefaultHorizontalAnimator();
     }
 }

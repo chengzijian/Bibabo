@@ -22,14 +22,10 @@ public class BabyVideoDetailContract {
 
         void playVideo(List<CustomVideoModel> list);
 
-        void fetchVideoInfoSuccess(VideoDetailsInfo result);
-
         void playNextPackVideo(String result);
     }
 
     interface Presenter extends BasePresenter<View> {
-
-        void fetchVideoList(String mHtmlUrl);
 
         void fetchVideoPlayInfo(String getInfoUrl);
 

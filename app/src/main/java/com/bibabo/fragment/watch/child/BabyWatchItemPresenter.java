@@ -2,24 +2,13 @@ package com.bibabo.fragment.watch.child;
 
 import com.bibabo.api.DefaultRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
-import com.bibabo.entity.DataListResult;
-import com.bibabo.entity.MainListDto;
-import com.bibabo.entity.MainListResult;
 import com.bibabo.entity.QVMovieInfo;
-import com.bibabo.framework.config.ShowConfig;
-import com.bibabo.framework.utils.LogUtils;
-import com.bibabo.httpdata.HttpData;
 import com.bibabo.resolver.QVMovieListConvert;
 
-import org.reactivestreams.Publisher;
-
-import java.util.ArrayList;
 import java.util.List;
 
-import io.reactivex.Flowable;
 import io.reactivex.annotations.NonNull;
 import io.reactivex.functions.Consumer;
-import io.reactivex.functions.Function;
 
 /**
  *
@@ -37,16 +26,6 @@ public class BabyWatchItemPresenter extends ListBasePresenterImpl<BabyWatchItemC
     public void fetchQVChildrenVideoList(String itype, String offset) {
         DefaultRetrofit.api().fetchQVChildrenVideoList(itype, offset)
                 .flatMap(new QVMovieListConvert<String, List<QVMovieInfo>>())
-                /*.filter(new Predicate<Object>() {
-                    @Override
-                    public boolean test(Object city) throws Exception {
-                        String id = city.getId();
-                        if(Integer.parseInt(id)<5){
-                            return true;
-                        }
-                        return false;
-                    }
-                })*/
                 .compose(view.<List<QVMovieInfo>>bindToLife())
                 .doOnNext(new Consumer<List<QVMovieInfo>>() {
                     @Override

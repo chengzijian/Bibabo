@@ -1,11 +1,9 @@
 package com.bibabo.fragment.watch.player;
 
 import com.bibabo.api.DefaultRetrofit;
-import com.bibabo.api.RepositoryRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
-import com.bibabo.entity.VideoDetailsInfo;
 import com.bibabo.resolver.QVMovieNextPlayUrlConvert;
 import com.bibabo.resolver.QVMoviePlayUrlConvert;
 
@@ -25,41 +23,6 @@ import io.reactivex.functions.Consumer;
 
 public class BabyVideoDetailPresenter extends ListBasePresenterImpl<BabyVideoDetailContract.View, QQListInfoResult>
         implements BabyVideoDetailContract.Presenter {
-    /**
-     * 获取视频播放列表
-     * @param vid
-     */
-    @Override
-    public void fetchVideoList(String vid) {
-        RepositoryRetrofit.api().<VideoDetailsInfo>fetchVideoPlayList(vid)
-                .compose(view.<VideoDetailsInfo>bindToLife())
-                .doOnSubscribe(new Consumer<Subscription>() {
-                    @Override
-                    public void accept(@NonNull Subscription subscription) throws Exception {
-                        view.notifyLoadingStarted();
-                    }
-                })
-                .observeOn(AndroidSchedulers.mainThread())
-                .doOnError(new Consumer<Throwable>() {
-                    @Override
-                    public void accept(@NonNull Throwable throwable) throws Exception {
-                        view.error();
-                    }
-                })
-                .doFinally(new Action() {
-                    @Override
-                    public void run() throws Exception {
-                        view.setRefresh(false);
-                        view.notifyLoadingFinished();
-                    }
-                })
-                .subscribe(new Consumer<VideoDetailsInfo>() {
-                    @Override
-                    public void accept(@NonNull VideoDetailsInfo result) throws Exception {
-                        view.fetchVideoInfoSuccess(result);
-                    }
-                });
-    }
 
     /**
      * 获取播放视频的信息
