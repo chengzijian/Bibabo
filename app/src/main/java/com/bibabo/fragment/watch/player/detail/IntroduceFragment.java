@@ -5,6 +5,8 @@ import android.os.Bundle;
 import com.bibabo.R;
 import com.bibabo.base.BaseBackFragment;
 
+import butterknife.OnClick;
+
 /**
  * 显示简介
  * Created by zijian.cheng on 2017/7/10.
@@ -23,5 +25,10 @@ public class IntroduceFragment extends BaseBackFragment {
     @Override
     protected int provideViewLayoutId() {
         return R.layout.fragment_introduce;
+    }
+
+    @OnClick(R.id.id_back_btn)
+    public void clickBackBtn() {
+        _mActivity.onBackPressed();
     }
 }

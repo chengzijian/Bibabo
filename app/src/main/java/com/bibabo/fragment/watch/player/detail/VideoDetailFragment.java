@@ -4,17 +4,22 @@ import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.View;
+import android.widget.TextView;
 
 import com.bibabo.R;
 import com.bibabo.base.MVPBaseFragment;
 import com.bibabo.base.list.BaseRecyclerListAdapter;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.base.list.ViewHolder;
+import com.bibabo.base.list.delegate.DividerItemDecoration;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.QQListInfoResult.DataBean;
 import com.bibabo.entity.VideoDetailsInfo;
+import com.bibabo.framework.utils.DisplayUtils;
+import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
 
 import java.util.List;
@@ -32,6 +37,15 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
 
     @BindView(R.id.recycler_view)
     RecyclerView recyclerView;
+
+    @BindView(R.id.id_movie_title)
+    TextView mMovieTitle;
+
+    @BindView(R.id.id_movie_score)
+    TextView mMovieScore;
+
+    private GridLayoutManager mGridLayoutManager;
+    private LinearLayoutManager mLinearLayoutManager;
 
     private String vid;
 
@@ -51,11 +65,15 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
     }
 
     private void initRecyclerView() {
-        GridLayoutManager mLayoutManager = new GridLayoutManager(getContext(), 5);
         //如果可以确定每个item的高度是固定的，设置这个选项可以提高性能
         recyclerView.setHasFixedSize(true);
         recyclerView.setNestedScrollingEnabled(false);
-        recyclerView.setLayoutManager(mLayoutManager);
+        final DividerItemDecoration dividerItemDecoration = new DividerItemDecoration(getContext()
+                , Color.TRANSPARENT, DisplayUtils.dp2px(4), DisplayUtils.dp2px(4));
+        dividerItemDecoration.setDrawBorderTopAndBottom(true);
+        dividerItemDecoration.setDrawBorderLeftAndRight(true);
+        recyclerView.addItemDecoration(dividerItemDecoration);
+        recyclerView.setLayoutManager(mGridLayoutManager);
         recyclerView.setItemAnimator(null);
         recyclerView.setFadingEdgeLength(0);
         recyclerView.setVerticalScrollBarEnabled(false);
@@ -68,6 +86,8 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        mGridLayoutManager = new GridLayoutManager(getContext(), 3);
+        mLinearLayoutManager = new LinearLayoutManager(getContext());
         initRecyclerView();
         if (mAppBarLayout != null) {
             mAppBarLayout.setBackgroundColor(Color.TRANSPARENT);
@@ -89,6 +109,10 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
             }
         }
 
+        mMovieTitle.setText(result.getTitle());
+        mMovieScore.setText(String.format("%1$s分・%2$s・全%3$s集・%4$s次播放"
+                , result.getScore().getScore()
+                , result.getTypeName(), "-", "-"));
         //播放视频
 //        playVideoForVid(result.getCurrVideoVid());
 //        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
@@ -117,9 +141,9 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
     @OnClick({R.id.id_grid_layer_btn, R.id.id_linear_layer_btn})
     public void changeLayoutManager(View v){
         if(v.getId() == R.id.id_grid_layer_btn){
-
+            recyclerView.setLayoutManager(mGridLayoutManager);
         } else if(v.getId() == R.id.id_linear_layer_btn){
-
+            recyclerView.setLayoutManager(mLinearLayoutManager);
         }
     }
 
@@ -143,16 +167,16 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
 
     @Override
     public void notifyLoadingStarted() {
-
+        PromptUtils.getInstance().showProgressDialog(getContext(), "数据加载中…");
     }
 
     @Override
     public void notifyLoadingFinished() {
-
+        PromptUtils.getInstance().dismissProgressDialog();
     }
 
     @Override
     public void error() {
-
+        PromptUtils.getInstance().dismissProgressDialog();
     }
 }

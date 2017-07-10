@@ -50,7 +50,6 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
 
     private ImageView previewImageView;
 
-    private SupportFragment mDetailFragment;
     private OrientationUtils orientationUtils;
 
     private boolean isPlay;
@@ -77,14 +76,10 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         String vid = getIntent().getStringExtra(INTENT_URL);
-        if (savedInstanceState != null) {
-            mDetailFragment = (SupportFragment) getSupportFragmentManager().getFragment(
-                    savedInstanceState, "fragment");
+        SupportFragment fragment = findFragment(VideoDetailFragment.class);
+        if (fragment == null) {
+            loadRootFragment(R.id.fl_container, VideoDetailFragment.newInstance(vid));
         }
-        if (mDetailFragment == null) {
-            mDetailFragment = VideoDetailFragment.newInstance(vid);
-        }
-        loadRootFragment(R.id.fl_container, mDetailFragment);
         initPlayerVideo();
     }
 

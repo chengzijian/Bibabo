@@ -14,7 +14,7 @@ public class CatalogAdapter extends BaseRecyclerListAdapter<QQListInfoResult.Dat
 
     @Override
     public int getItemViewLayoutId() {
-        return R.layout.item_video_list;
+        return R.layout.item_catalog;
     }
 
     @Override

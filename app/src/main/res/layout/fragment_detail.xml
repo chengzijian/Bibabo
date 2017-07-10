@@ -26,10 +26,10 @@
             android:layout_height="wrap_content">
 
             <TextView
+                android:id="@+id/id_movie_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:singleLine="true"
-                android:text="小猪佩琦"
                 android:textColor="#333333"
                 android:textSize="18sp"
                 android:textStyle="bold" />
@@ -46,6 +46,7 @@
         </FrameLayout>
 
         <TextView
+            android:id="@+id/id_movie_score"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
@@ -171,14 +172,9 @@
         </LinearLayout>
     </FrameLayout>
 
-    <FrameLayout
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recycler_view"
         android:layout_width="match_parent"
-        android:layout_height="250dp">
-
-        <android.support.v7.widget.RecyclerView
-            android:id="@+id/recycler_view"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"/>
-    </FrameLayout>
+        android:layout_height="wrap_content"/>
 
 </LinearLayout>

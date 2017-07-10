@@ -21,6 +21,12 @@ public abstract class BaseBackFragment extends BaseFragment implements ISwipeBac
         this.mDelegate.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        setParallaxOffset(0.5f);
+    }
+
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         this.mDelegate.onViewCreated(view, savedInstanceState);
