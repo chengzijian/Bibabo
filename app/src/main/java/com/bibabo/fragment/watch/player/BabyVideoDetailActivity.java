@@ -2,10 +2,8 @@ package com.bibabo.fragment.watch.player;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.widget.ImageView;
 
@@ -16,17 +14,13 @@ import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.event.GetVideoInfoEvent;
 import com.bibabo.event.PlayVideoEvent;
+import com.bibabo.event.PlayVideoListEvent;
 import com.bibabo.fragment.watch.player.detail.VideoDetailFragment;
-import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.fragmentation.SupportFragment;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.StringUtils;
-import com.bibabo.widget.DefaultVideoPlayer;
 import com.bibabo.widget.VideoPlayer.QQVideoPlayer;
 import com.shuyu.gsyvideoplayer.GSYVideoPlayer;
-import com.shuyu.gsyvideoplayer.listener.LockClickListener;
-import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
-import com.shuyu.gsyvideoplayer.utils.GSYVideoType;
 import com.shuyu.gsyvideoplayer.utils.OrientationUtils;
 import com.shuyu.gsyvideoplayer.video.StandardGSYVideoPlayer;
 
@@ -39,8 +33,6 @@ import java.util.List;
 import butterknife.BindView;
 import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
-
-import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
 
 /**
  *
@@ -90,12 +82,17 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
         initPlayerVideo();
     }
 
+    @Subscribe
+    public void playVideo(PlayVideoEvent event) {
+        detailPlayer.setUp(null, event.position);
+    }
+
     /**
      * 设置播放列表
      * @param event
      */
     @Subscribe
-    public void playVideoForVid(PlayVideoEvent event) {
+    public void setVideoPlayerList(PlayVideoListEvent event){
         List<QQListInfoResult.DataBean> videoList = VideoCommonData.getVideoList();
         if(videoList != null && videoList.size() > 0){
             detailPlayer.setUp(videoList, 0);

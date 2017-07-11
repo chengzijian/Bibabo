@@ -1,9 +1,8 @@
 package com.bibabo.fragment.watch.child;
 
-import com.bibabo.api.DefaultRetrofit;
+import com.bibabo.api.CacheRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.QVMovieInfo;
-import com.bibabo.resolver.QVMovieListConvert;
 
 import java.util.List;
 
@@ -24,8 +23,7 @@ public class BabyWatchItemPresenter extends ListBasePresenterImpl<BabyWatchItemC
      */
     @Override
     public void fetchQVChildrenVideoList(String itype, String offset) {
-        DefaultRetrofit.api().fetchQVChildrenVideoList(itype, offset)
-                .flatMap(new QVMovieListConvert<String, List<QVMovieInfo>>())
+        CacheRetrofit.api().<List<QVMovieInfo>>fetchQVChildrenVideoList(itype, offset)
                 .compose(view.<List<QVMovieInfo>>bindToLife())
                 .doOnNext(new Consumer<List<QVMovieInfo>>() {
                     @Override

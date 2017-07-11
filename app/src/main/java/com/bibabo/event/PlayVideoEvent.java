@@ -1,16 +1,15 @@
 package com.bibabo.event;
 
 /**
+ * 点击剧集
  * Created by zijian.cheng on 2017/7/11.
  */
 
 public class PlayVideoEvent {
 
-    public String title;
-    public String vid;
+    public int position;
 
-    public PlayVideoEvent(String title, String currVideoVid) {
-        this.title = title;
-        this.vid = currVideoVid;
+    public PlayVideoEvent(int position) {
+        this.position = position;
     }
 }

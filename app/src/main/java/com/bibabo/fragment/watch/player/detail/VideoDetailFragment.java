@@ -19,6 +19,7 @@ import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.QQListInfoResult.DataBean;
 import com.bibabo.entity.VideoDetailsInfo;
 import com.bibabo.event.PlayVideoEvent;
+import com.bibabo.event.PlayVideoListEvent;
 import com.bibabo.fragment.watch.player.VideoCommonData;
 import com.bibabo.framework.utils.DisplayUtils;
 import com.bibabo.framework.utils.PromptUtils;
@@ -123,8 +124,8 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
                 , result.getScore().getScore()
                 , result.getTypeName(), "-", "-"));
 
-        //播放视频
-        EventBus.getDefault().post(new PlayVideoEvent(result.getTitle(), result.getCurrVideoVid()));
+        //设置播放器视频播放列表
+        EventBus.getDefault().post(new PlayVideoListEvent());
     }
 
     private BaseRecyclerListAdapter.OnItemClickListener getOnItemClickListener() {
@@ -133,7 +134,7 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
             @Override
             public void onItemClick(View view, ViewHolder holder, DataBean data) {
                 //播放视频
-                EventBus.getDefault().post(new PlayVideoEvent(data.getVideoItem().getTitle(), data.getVideoItem().getVid()));
+                EventBus.getDefault().post(new PlayVideoEvent(holder.getLayoutPosition()));
             }
 
             @Override

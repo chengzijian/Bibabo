@@ -2,6 +2,7 @@ package com.bibabo.api;
 
 import com.bibabo.entity.HttpResult;
 import com.bibabo.framework.BaseApplication;
+import com.bibabo.resolver.QVMovieListConvert;
 import com.bibabo.resolver.QVVideoDetailsResolver;
 
 import io.reactivex.Flowable;
@@ -18,22 +19,22 @@ import io.victoralbertos.jolyglot.GsonSpeaker;
  * Created by zijian.cheng on 2017/7/6.
  */
 
-public class RepositoryRetrofit {
+public class CacheRetrofit {
 
     private final CacheProviders providers;
-    static volatile RepositoryRetrofit defaultInstance;
+    static volatile CacheRetrofit defaultInstance;
 
-    private RepositoryRetrofit() {
+    private CacheRetrofit() {
         providers = new RxCache.Builder()
                 .persistence(BaseApplication.getApplication().getCacheDir(), new GsonSpeaker())
                 .using(CacheProviders.class);
     }
 
-    public static RepositoryRetrofit api() {
+    public static CacheRetrofit api() {
         if (defaultInstance == null) {
-            synchronized (RepositoryRetrofit.class) {
+            synchronized (CacheRetrofit.class) {
                 if (defaultInstance == null) {
-                    defaultInstance = new RepositoryRetrofit();
+                    defaultInstance = new CacheRetrofit();
                 }
             }
         }
@@ -44,6 +45,12 @@ public class RepositoryRetrofit {
         return providers.getCacheData(DefaultRetrofit.api().fetchVideoPlayList(vid)
                         .flatMap(new QVVideoDetailsResolver<String, T>())
                 , new DynamicKey(vid), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<T>());
+    }
+
+    public <T> Flowable<T> fetchQVChildrenVideoList(String itype, String offset) {
+        return providers.getCacheData(DefaultRetrofit.api().fetchQVChildrenVideoList(itype, offset)
+                    .flatMap(new QVMovieListConvert<String, T>())
+                , new DynamicKey(itype+"-"+offset), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<T>());
     }
 
     /**

@@ -21,11 +21,9 @@ public class QVMovieNextPlayUrlConvert<T, F> implements Function<T, Publisher<F>
     public Publisher<F> apply(@NonNull T source) throws Exception {
         String htmlString = String.valueOf(source);
         htmlString = htmlString.replace("QZOutputJson=", "").replace(";", "");
-        LogUtils.e("playNextUrls:", htmlString);
         QQNextPackVideoInfo treasure = JSONUtils.fromJsonString(htmlString, QQNextPackVideoInfo.class);
         String nextFileName = treasure.getKeyid().replaceAll("\\..*?10", ".p") + ".mp4";
-        String videoUrl = String.format("%1$s?sdtfrom=v1010&guid=%2$s&vkey=%3$s#t=66"
-                , nextFileName, ShowConfig.GUID, treasure.getKey());
+        String videoUrl = String.format(ShowConfig.PLAY_VIDEO_URL, nextFileName, ShowConfig.GUID, treasure.getKey());
         LogUtils.e("nextVideoUrl:", videoUrl);
         return Flowable.just((F) videoUrl);
     }

@@ -1,6 +1,6 @@
 package com.bibabo.fragment.watch.player.detail;
 
-import com.bibabo.api.RepositoryRetrofit;
+import com.bibabo.api.CacheRetrofit;
 import com.bibabo.base.list.ListBasePresenterImpl;
 import com.bibabo.entity.QQListInfoResult.DataBean;
 import com.bibabo.entity.VideoDetailsInfo;
@@ -25,7 +25,7 @@ public class VideoDetailPresenter extends ListBasePresenterImpl<VideoDetailContr
      */
     @Override
     public void fetchVideoList(String vid) {
-        RepositoryRetrofit.api().<VideoDetailsInfo>fetchVideoPlayList(vid)
+        CacheRetrofit.api().<VideoDetailsInfo>fetchVideoPlayList(vid)
                 .compose(view.<VideoDetailsInfo>bindToLife())
                 .doOnSubscribe(new Consumer<Subscription>() {
                     @Override

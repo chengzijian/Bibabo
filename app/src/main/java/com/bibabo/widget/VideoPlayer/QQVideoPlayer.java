@@ -1,13 +1,8 @@
 package com.bibabo.widget.VideoPlayer;
 
 import android.content.Context;
-import android.text.TextUtils;
 import android.util.AttributeSet;
-import android.view.View;
-import android.view.ViewGroup;
-import android.webkit.JavascriptInterface;
 
-import com.bibabo.base.BaseActivity;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult.DataBean;
 import com.bibabo.event.GetVideoInfoEvent;
@@ -15,12 +10,9 @@ import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.videoplayer.JCVideoPlayerStandard;
-import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
 
 import org.greenrobot.eventbus.EventBus;
-import org.jsoup.Jsoup;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +23,6 @@ import java.util.List;
 
 public class QQVideoPlayer extends JCVideoPlayerStandard {
 
-    public static final String PLAY_VIDEO_URL = "%1$s%2$s?sdtfrom=v1010&guid=%3$s&vkey=%4$s#t=66";
     private String playPrefix;
 
     protected List<DataBean> mUriList = new ArrayList();
@@ -49,13 +40,18 @@ public class QQVideoPlayer extends JCVideoPlayerStandard {
     }
 
     public void setUp(List<DataBean> url, int position) {
-        this.mUriList = url;
-        this.mPlayPosition = position;
-        mVideoItemBean = url.get(position).getVideoItem();
+        if(url != null){
+            this.mUriList = url;
+        }
+        if(position < mUriList.size()){
+            mCurrPlayPosition = 0;
+            this.mPlayPosition = position;
+            mVideoItemBean = mUriList.get(position).getVideoItem();
 
-        String getInfo = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s",
-                mVideoItemBean.getVid(), ShowConfig.GUID, "", String.valueOf(System.currentTimeMillis() / 1000));
-        EventBus.getDefault().post(new GetVideoInfoEvent(getInfo));
+            String getInfo = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&platform=10901&sdtfrom=v1010&defn=hd&ehost=%3$s&timestamp=%4$s",
+                    mVideoItemBean.getVid(), ShowConfig.GUID, "", String.valueOf(System.currentTimeMillis() / 1000));
+            EventBus.getDefault().post(new GetVideoInfoEvent(getInfo));
+        }
     }
 
     public void setCurrentVideo(int position) {
@@ -98,13 +94,15 @@ public class QQVideoPlayer extends JCVideoPlayerStandard {
                     model.getVid(), ShowConfig.GUID, keyid, String.valueOf(System.currentTimeMillis() / 1000), format);
             EventBus.getDefault().post(new GetVideoInfoEvent(getkey));
         } else {
-            String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
+            String videoUrl = String.format(ShowConfig.PLAY_VIDEO_URL, keyid, guid, vkey);
             LogUtils.e("videoUrl:", videoUrl);
             setUp(videoUrl);
         }
     }
 
     public void setUp(String videoUrl){
+        if(!StringUtils.isEmpty(playPrefix))
+            videoUrl = playPrefix + videoUrl;
         this.setUp(videoUrl, SCREEN_LAYOUT_NORMAL, this.currentVideo.get(mCurrPlayPosition).getTitle());
     }
 
@@ -181,4 +179,49 @@ public class QQVideoPlayer extends JCVideoPlayerStandard {
 //            super.onAutoCompletion();
 //        }
 //    }
+
+
+    @Override
+    public void onPrepared() {
+        super.onPrepared();
+    }
+
+    @Override
+    public void onCompletion() {
+        //if(this.mPlayPosition >= this.mUriList.size() - 1) {
+            super.onCompletion();
+        //}
+    }
+
+    @Override
+    public void onAutoCompletion() {
+        ++this.mCurrPlayPosition;
+        if(mCurrPlayPosition < this.currentVideo.size()) {
+            //播放当前视频的下一段
+            setCurrentVideo(mCurrPlayPosition);
+        } else {
+            //播放下一个视频
+            ++this.mPlayPosition;
+            if(mUriList != null && mPlayPosition < this.mUriList.size()){
+                setUp(null, mPlayPosition);
+            } else {
+                super.onAutoCompletion();
+            }
+        }
+    }
+
+    @Override
+    public void setBufferProgress(int bufferProgress) {
+        super.setBufferProgress(bufferProgress);
+    }
+
+    @Override
+    public void onSeekComplete() {
+        super.onSeekComplete();
+    }
+
+    @Override
+    public void onVideoSizeChanged() {
+        super.onVideoSizeChanged();
+    }
 }

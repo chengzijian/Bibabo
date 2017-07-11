@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.view.MotionEvent;
 
+import com.bibabo.framework.utils.AppManager;
 import com.trello.rxlifecycle2.components.support.RxAppCompatActivity;
 
 import me.yokeyword.fragmentation.ExtraTransaction;
@@ -43,6 +44,7 @@ public class SupportActivity extends RxAppCompatActivity implements ISupportActi
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        AppManager.getAppManager().addActivity(this);
         mDelegate.onCreate(savedInstanceState);
     }
 
@@ -56,6 +58,7 @@ public class SupportActivity extends RxAppCompatActivity implements ISupportActi
     protected void onDestroy() {
         mDelegate.onDestroy();
         super.onDestroy();
+        AppManager.getAppManager().finishActivity(this);
     }
 
     /**
