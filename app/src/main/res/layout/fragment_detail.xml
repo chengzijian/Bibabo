@@ -162,8 +162,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center"
-                android:drawablePadding="4dp"
                 android:layout_marginLeft="8dp"
+                android:drawablePadding="4dp"
                 android:drawableRight="@mipmap/ic_arrow_gray"
                 android:text="缓存"
                 android:textColor="#999999"
@@ -172,9 +172,19 @@
         </LinearLayout>
     </FrameLayout>
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/recycler_view"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
+        android:layout_height="match_parent">
 
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recycler_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="48dp" />
+
+        <com.bibabo.widget.FlexRecyclerView
+            android:id="@+id/id_flex_view"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content" />
+    </FrameLayout>
 </LinearLayout>

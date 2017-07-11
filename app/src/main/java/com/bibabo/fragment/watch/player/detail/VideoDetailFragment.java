@@ -18,9 +18,14 @@ import com.bibabo.base.list.delegate.DividerItemDecoration;
 import com.bibabo.entity.QQListInfoResult;
 import com.bibabo.entity.QQListInfoResult.DataBean;
 import com.bibabo.entity.VideoDetailsInfo;
+import com.bibabo.event.PlayVideoEvent;
+import com.bibabo.fragment.watch.player.VideoCommonData;
 import com.bibabo.framework.utils.DisplayUtils;
 import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
+import com.bibabo.widget.FlexRecyclerView;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.util.List;
 
@@ -43,6 +48,9 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
 
     @BindView(R.id.id_movie_score)
     TextView mMovieScore;
+
+    @BindView(R.id.id_flex_view)
+    FlexRecyclerView mFlexRecyclerView;
 
     private GridLayoutManager mGridLayoutManager;
     private LinearLayoutManager mLinearLayoutManager;
@@ -106,6 +114,7 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
             List<QQListInfoResult.DataBean> dataBeans = listInfo.getData();
             if (dataBeans != null && dataBeans.size() > 0) {
                 mAdapter.setData(dataBeans);
+                VideoCommonData.setVideoList(dataBeans);
             }
         }
 
@@ -113,13 +122,9 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
         mMovieScore.setText(String.format("%1$s分・%2$s・全%3$s集・%4$s次播放"
                 , result.getScore().getScore()
                 , result.getTypeName(), "-", "-"));
-        //播放视频
-//        playVideoForVid(result.getCurrVideoVid());
-//        ImageLoader.loadStringRes(videoImage, "http:" + result.getPic());
-//        ImageLoader.loadStringRes(previewImageView, "http:" + result.getPic());
-//        videoDesc.setText(result.getSecTitle());
-//        videoTitle.setText(result.getTitle());
 
+        //播放视频
+        EventBus.getDefault().post(new PlayVideoEvent(result.getTitle(), result.getCurrVideoVid()));
     }
 
     private BaseRecyclerListAdapter.OnItemClickListener getOnItemClickListener() {
@@ -127,8 +132,8 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
 
             @Override
             public void onItemClick(View view, ViewHolder holder, DataBean data) {
-//                playVideoForVid(data.getVideoItem().getVid());
-//                ImageLoader.loadStringRes(previewImageView, "http:" + data.getVideoItem().getPreview());
+                //播放视频
+                EventBus.getDefault().post(new PlayVideoEvent(data.getVideoItem().getTitle(), data.getVideoItem().getVid()));
             }
 
             @Override

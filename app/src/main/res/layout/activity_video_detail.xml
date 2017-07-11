@@ -15,7 +15,7 @@
         android:background="@android:color/white"
         app:layout_collapseMode="pin">
 
-        <com.bibabo.widget.DefaultVideoPlayer
+        <com.bibabo.widget.VideoPlayer.QQVideoPlayer
             android:id="@+id/detail_player"
             android:layout_width="match_parent"
             android:layout_height="200dp"

@@ -36,7 +36,13 @@ public class QQListInfoResult implements Serializable {
 
     public static class DataBean {
         /**
-         * videoItem : {"vid":"e0518k7x8jy","playStartTime":0,"playEndTime":0,"duration":"149","title":"甩葱歌","episode":"0","showBullet":true,"showImageBullet":false,"openBulletDefault":false,"showMark":0,"isNeedPay":false,"tryTime":"1306030","preview":"//puui.qpic.cn/vpic/0/e0518k7x8jy_160_90_3.jpg/0","isTrailer":0,"positive_trailer":1,"isFull":0,"langue":null,"series_part_title":"第1季 第集","category_map":[11239,"正片",1248,"儿童音乐",106,"少儿"]}
+         * videoItem : {"vid":"e0518k7x8jy","playStartTime":0,"playEndTime":0,"duration":"149"
+         * ,"title":"甩葱歌","episode":"0","showBullet":true,"showImageBullet":false,"openBulletDefault":false,
+         * "showMark":0,"isNeedPay":false,"tryTime":"1306030",
+         * "preview":"//puui.qpic.cn/vpic/0/e0518k7x8jy_160_90_3.jpg/0",
+         * "isTrailer":0,"positive_trailer":1,"isFull":0,"langue":null,
+         * "series_part_title":"第1季 第集",
+         * "category_map":[11239,"正片",1248,"儿童音乐",106,"少儿"]}
          */
 
         @SerializedName("videoItem")

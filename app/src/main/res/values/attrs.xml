@@ -1,4 +1,52 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
+    <!--圆角的各种按钮 BEGIN-->
+
+    <!-- 以下是重用attr的正确姿势,一切为了在布局中可以自动提示-->
+    <!-- 圆角矩形背景色 -->
+    <attr name="rBackgroundColor" format="color"/>
+    <!-- 圆角矩形背景色press -->
+    <attr name="backgroundPressColor" format="color"/>
+    <!-- 圆角弧度,单位dp-->
+    <attr name="cornerRadius" format="dimension"/>
+    <!-- 圆角弧度,单位dp-->
+    <attr name="strokeWidth" format="dimension"/>
+    <!-- 圆角边框颜色-->
+    <attr name="rStrokeColor" format="color"/>
+    <!-- 圆角边框颜色press -->
+    <attr name="strokePressColor" format="color"/>
+    <!-- 文字颜色press-->
+    <attr name="textPressColor" format="color"/>
+    <!-- 圆角弧度是高度一半-->
+    <attr name="isRadiusHalfHeight" format="boolean"/>
+    <!-- 圆角矩形宽高相等,取较宽高中大值-->
+    <attr name="isWidthHeightEqual" format="boolean"/>
+    <!-- 圆角弧度,单位dp,TopLeft-->
+    <attr name="cornerRadius_TL" format="dimension"/>
+    <!-- 圆角弧度,单位dp,TopRight-->
+    <attr name="cornerRadius_TR" format="dimension"/>
+    <!-- 圆角弧度,单位dp,BottomLeft-->
+    <attr name="cornerRadius_BL" format="dimension"/>
+    <!-- 圆角弧度,单位dp,BottomRight-->
+    <attr name="cornerRadius_BR" format="dimension"/>
+    <!-- 是否有Ripple效果,api21+有效-->
+    <attr name="isRippleEnable" format="boolean"/>
+    <declare-styleable name="RoundViewAttr">
+        <attr name="rBackgroundColor"/>
+        <attr name="backgroundPressColor"/>
+        <attr name="cornerRadius"/>
+        <attr name="strokeWidth"/>
+        <attr name="rStrokeColor"/>
+        <attr name="strokePressColor"/>
+        <attr name="textPressColor"/>
+        <attr name="isRadiusHalfHeight"/>
+        <attr name="isWidthHeightEqual"/>
+        <attr name="cornerRadius_TL"/>
+        <attr name="cornerRadius_TR"/>
+        <attr name="cornerRadius_BL"/>
+        <attr name="cornerRadius_BR"/>
+        <attr name="isRippleEnable"/>
+    </declare-styleable>
+    <!--圆角的各种按钮 END-->
 </resources>

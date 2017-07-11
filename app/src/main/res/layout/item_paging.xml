@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.bibabo.widget.RoundView.RoundTextView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/id_paging_item_text"
+    android:layout_width="wrap_content"
+    android:layout_height="32dp"
+    android:gravity="center"
+    android:paddingLeft="12dp"
+    android:paddingRight="12dp"
+    android:text="1-120"
+    android:textColor="#333333"
+    android:textSize="12sp"
+    app:isRadiusHalfHeight="true"
+    app:rStrokeColor="#333333"
+    app:strokeWidth="1px" />

@@ -41,10 +41,10 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     protected void setCategoryList() {
         childCategoryList.clear();
 
+        childCategoryList.add(new CategoryData("儿童历险", "4"));
         childCategoryList.add(new CategoryData("儿童音乐", "1"));
         childCategoryList.add(new CategoryData("儿童益智", "2"));
         childCategoryList.add(new CategoryData("儿童教育", "3"));
-        childCategoryList.add(new CategoryData("儿童历险", "4"));
         childCategoryList.add(new CategoryData("儿童奇幻", "5"));
         childCategoryList.add(new CategoryData("儿童搞笑", "6"));
         childCategoryList.add(new CategoryData("儿童竞技", "7"));
