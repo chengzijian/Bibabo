@@ -30,5 +30,6 @@ public interface Constant {
     String BASE_URL = "https://v.qq.com/";
 
     String METHOD_CHILDREN_LIST_PATH = "x/list/children";
+    String METHOD_CARTOON_LIST_PATH = "x/list/cartoon";
     String METHOD_MOVIE_LIST_PATH = "x/cover/{vid}.html";
 }

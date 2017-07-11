@@ -48,9 +48,9 @@ public class CacheRetrofit {
     }
 
     public <T> Flowable<T> fetchQVChildrenVideoList(String itype, String offset) {
-        return providers.getCacheData(DefaultRetrofit.api().fetchQVChildrenVideoList(itype, offset)
+        return providers.getCacheData(DefaultRetrofit.api().fetchCartoonVideoList(itype, offset)
                     .flatMap(new QVMovieListConvert<String, T>())
-                , new DynamicKey(itype+"-"+offset), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<T>());
+                , new DynamicKey(itype+"--"+offset), new EvictDynamicKey(false)).map(new HttpResultFuncCcche<T>());
     }
 
     /**

@@ -40,19 +40,23 @@ public class BabyWatchFragment extends MVPBaseViewPagerFragment<BabyWatchContrac
     @Override
     protected void setCategoryList() {
         childCategoryList.clear();
+//
+//        childCategoryList.add(new CategoryData("儿童历险", "4"));
+//        childCategoryList.add(new CategoryData("儿童音乐", "1"));
+//        childCategoryList.add(new CategoryData("儿童教育", "3"));
+//        childCategoryList.add(new CategoryData("儿童竞技", "7"));
+//        childCategoryList.add(new CategoryData("少儿经典", "8"));
+//        childCategoryList.add(new CategoryData("海外精选", "10"));
 
-        childCategoryList.add(new CategoryData("儿童历险", "4"));
-        childCategoryList.add(new CategoryData("儿童音乐", "1"));
-        childCategoryList.add(new CategoryData("儿童益智", "2"));
-        childCategoryList.add(new CategoryData("儿童教育", "3"));
-        childCategoryList.add(new CategoryData("儿童奇幻", "5"));
-        childCategoryList.add(new CategoryData("儿童搞笑", "6"));
-        childCategoryList.add(new CategoryData("儿童竞技", "7"));
-        childCategoryList.add(new CategoryData("少儿经典", "8"));
-        childCategoryList.add(new CategoryData("少儿综艺", "9"));
-        childCategoryList.add(new CategoryData("海外精选", "10"));
-        childCategoryList.add(new CategoryData("合家欢剧场", "13"));
-
+        childCategoryList.add(new CategoryData("少年", "1"));
+        childCategoryList.add(new CategoryData("少女", "27"));
+        childCategoryList.add(new CategoryData("萌系", "26"));
+        childCategoryList.add(new CategoryData("搞笑", "2"));
+        childCategoryList.add(new CategoryData("惊悚", "7"));
+        childCategoryList.add(new CategoryData("魔幻", "4"));
+        childCategoryList.add(new CategoryData("推理", "5"));
+        childCategoryList.add(new CategoryData("原创", "11"));
+        childCategoryList.add(new CategoryData("竞技", "9"));
     }
 
     @Override
