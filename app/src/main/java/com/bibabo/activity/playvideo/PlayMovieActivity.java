@@ -15,8 +15,7 @@ import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.PromptUtils;
 import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.videoplayer.JCVideoPlayer;
-import com.bibabo.widget.DefaultVideoPlayer;
-import com.shuyu.gsyvideoplayer.model.GSYVideoModel;
+import com.bibabo.widget.VideoPlayer.QQVideoPlayer;
 
 import org.jsoup.Jsoup;
 
@@ -26,8 +25,6 @@ import butterknife.BindView;
 import butterknife.OnClick;
 import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
-
-import static com.bibabo.widget.DefaultVideoPlayer.PLAY_VIDEO_URL;
 
 /**
  *
@@ -49,7 +46,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
     EditText mPlayVideoUrl;
     private String ehost;
     @BindView(R.id.detail_player)
-    DefaultVideoPlayer detailPlayer;
+    QQVideoPlayer detailPlayer;
 
     @Override
     protected int provideContentViewId() {
@@ -72,39 +69,39 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
 //                , JCVideoPlayerStandard.SCREEN_LAYOUT_NORMAL, "tt");
 
 
-        detailPlayer.setFetchNextPackVkey(new DefaultVideoPlayer.FetchNextPackVkey() {
-            @Override
-            public void fetchVkey(CustomVideoModel model) {
-                String playPrefix = model.getPlayPrefix();
-                String keyid = model.getKeyid();
-                String guid = ShowConfig.GUID;
-
-                String vkey = model.getFvkey();
-                if (StringUtils.isEmpty(vkey)) {
-                    String keyId = model.getKeyid();
-                    String format = keyid.substring(keyId.indexOf(".p") + 2);
-                    format = "10" + format.substring(0, format.indexOf("."));
-                    String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&filename=%3$s&timestamp=%4$s&format=%5$s",
-                            model.getVid(), ShowConfig.GUID, keyId, String.valueOf(System.currentTimeMillis() / 1000), format);
-                    loadLocalUrl(url, new InJavaScriptLocalObj(){
-                        @Override
-                        @JavascriptInterface
-                        public void showSource(String html) {
-                            String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
-                            if (!StringUtils.isEmpty(getKeyUrl)) {
-                                //https://vv.video.qq.com/getkey?
-                                LogUtils.e("nextVideoUrlKey:", getKeyUrl);
-                                presenter.fetchNextInfo(getKeyUrl);
-                            }
-                        }
-                    });
-                } else {
-                    String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
-                    LogUtils.e("videoUrl:", videoUrl);
-                    detailPlayer.playNextPackVideo(new GSYVideoModel(videoUrl, model.getTitle()));
-                }
-            }
-        });
+//        detailPlayer.setFetchNextPackVkey(new DefaultVideoPlayer.FetchNextPackVkey() {
+//            @Override
+//            public void fetchVkey(CustomVideoModel model) {
+//                String playPrefix = model.getPlayPrefix();
+//                String keyid = model.getKeyid();
+//                String guid = ShowConfig.GUID;
+//
+//                String vkey = model.getFvkey();
+//                if (StringUtils.isEmpty(vkey)) {
+//                    String keyId = model.getKeyid();
+//                    String format = keyid.substring(keyId.indexOf(".p") + 2);
+//                    format = "10" + format.substring(0, format.indexOf("."));
+//                    String url = String.format("file:///android_asset/qv_url.html?vid=%1$s&guid=%2$s&filename=%3$s&timestamp=%4$s&format=%5$s",
+//                            model.getVid(), ShowConfig.GUID, keyId, String.valueOf(System.currentTimeMillis() / 1000), format);
+//                    loadLocalUrl(url, new InJavaScriptLocalObj(){
+//                        @Override
+//                        @JavascriptInterface
+//                        public void showSource(String html) {
+//                            String getKeyUrl = Jsoup.parse(html).getElementById("get_key_div").text();
+//                            if (!StringUtils.isEmpty(getKeyUrl)) {
+//                                //https://vv.video.qq.com/getkey?
+//                                LogUtils.e("nextVideoUrlKey:", getKeyUrl);
+//                                presenter.fetchNextInfo(getKeyUrl);
+//                            }
+//                        }
+//                    });
+//                } else {
+//                    String videoUrl = String.format(PLAY_VIDEO_URL, playPrefix, keyid, guid, vkey);
+//                    LogUtils.e("videoUrl:", videoUrl);
+//                    detailPlayer.playNextPackVideo(new GSYVideoModel(videoUrl, model.getTitle()));
+//                }
+//            }
+//        });
     }
 
     @OnClick(R.id.id_analytic_url)
@@ -154,14 +151,19 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
     }
 
     @Override
-    public void playVideo(List<CustomVideoModel> result) {
-        detailPlayer.setUp(result, 0);
+    public void playVideo(List<CustomVideoModel> list) {
+        //默认播放第1段视频
+        detailPlayer.setCurrentVideo(list, 0);
     }
 
+    /**
+     * 得到下一段视频播放地址成功
+     * @param videoUrl
+     */
     @Override
     public void playNextPackVideo(String videoUrl) {
-        LogUtils.e("videoUrl:", videoUrl);
-        detailPlayer.playNextPackVideo(new GSYVideoModel(videoUrl, null));
+        LogUtils.e("NextVideoUrl:", videoUrl);
+        detailPlayer.setUp(videoUrl);
     }
 
     @Override
