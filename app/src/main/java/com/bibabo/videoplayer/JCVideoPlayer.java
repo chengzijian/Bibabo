@@ -29,6 +29,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.bibabo.R;
+import com.bibabo.event.ExitVideoPlayerEvent;
+
+import org.greenrobot.eventbus.EventBus;
 
 import java.lang.reflect.Constructor;
 import java.util.Map;
@@ -626,7 +629,11 @@ public abstract class JCVideoPlayer extends FrameLayout implements View.OnClickL
             return true;
         } else if (JCVideoPlayerManager.getFirstFloor() != null &&
                 (JCVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_FULLSCREEN ||
-                        JCVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_TINY)) {//以前我总想把这两个判断写到一起，这分明是两个独立是逻辑
+                        JCVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_WINDOW_TINY ||
+                        JCVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_LAYOUT_NORMAL)) {//以前我总想把这两个判断写到一起，这分明是两个独立是逻辑
+            if(JCVideoPlayerManager.getFirstFloor().currentScreen == SCREEN_LAYOUT_NORMAL){
+                EventBus.getDefault().post(new ExitVideoPlayerEvent());
+            }
             CLICK_QUIT_FULLSCREEN_TIME = System.currentTimeMillis();
             //直接退出全屏和小窗
             JCVideoPlayerManager.getCurrentJcvd().currentState = CURRENT_STATE_NORMAL;
@@ -634,8 +641,10 @@ public abstract class JCVideoPlayer extends FrameLayout implements View.OnClickL
             JCMediaManager.instance().releaseMediaPlayer();
             JCVideoPlayerManager.setFirstFloor(null);
             return true;
+        } else {
+            EventBus.getDefault().post(new ExitVideoPlayerEvent());
+            return true;
         }
-        return false;
     }
 
     public void startWindowFullscreen() {

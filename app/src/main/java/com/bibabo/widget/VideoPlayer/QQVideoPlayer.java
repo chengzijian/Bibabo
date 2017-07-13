@@ -104,61 +104,10 @@ public class QQVideoPlayer extends JCVideoPlayerStandard {
         if(!StringUtils.isEmpty(playPrefix))
             videoUrl = playPrefix + videoUrl;
         this.setUp(videoUrl, SCREEN_LAYOUT_NORMAL, this.currentVideo.get(mCurrPlayPosition).getTitle());
+
+        startButton.performClick();
     }
 
-//    public boolean setUp(List<DataBean> url, boolean cacheWithPlay, int position, Object... objects) {
-//        this.mUriList = url;
-//        this.mPlayPosition = position;
-//        GSYVideoModel gsyVideoModel = (GSYVideoModel)url.get(position);
-//        boolean set = this.setUp(gsyVideoModel.getUrl(), cacheWithPlay, objects);
-//        if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
-//            this.mTitleTextView.setText(gsyVideoModel.getTitle());
-//        }
-//
-//        return set;
-//    }
-//
-//    public boolean setUp(List<DataBean> url, boolean cacheWithPlay, int position, File cachePath, Object... objects) {
-//        this.mUriList = url;
-//        this.mPlayPosition = position;
-//        GSYVideoModel gsyVideoModel = (GSYVideoModel)url.get(position);
-//        boolean set = this.setUp(gsyVideoModel.getUrl(), cacheWithPlay, cachePath, objects);
-//        if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
-//            this.mTitleTextView.setText(gsyVideoModel.getTitle());
-//        }
-//
-//        return set;
-//    }
-//
-//    public GSYBaseVideoPlayer startWindowFullscreen(Context context, boolean actionBar, boolean statusBar) {
-//        GSYBaseVideoPlayer gsyBaseVideoPlayer = super.startWindowFullscreen(context, actionBar, statusBar);
-//        if(gsyBaseVideoPlayer != null) {
-//            QQVideoPlayer QQVideoPlayer = (QQVideoPlayer)gsyBaseVideoPlayer;
-//            QQVideoPlayer.mPlayPosition = this.mPlayPosition;
-//            QQVideoPlayer.mUriList = this.mUriList;
-//            GSYVideoModel gsyVideoModel = (GSYVideoModel)this.mUriList.get(this.mPlayPosition);
-//            if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
-//                QQVideoPlayer.mTitleTextView.setText(gsyVideoModel.getTitle());
-//            }
-//        }
-//
-//        return gsyBaseVideoPlayer;
-//    }
-//
-//    protected void resolveNormalVideoShow(View oldF, ViewGroup vp, DataBean gsyVideoPlayer) {
-//        if(gsyVideoPlayer != null) {
-//            QQVideoPlayer QQVideoPlayer = (QQVideoPlayer)gsyVideoPlayer;
-//            this.mPlayPosition = QQVideoPlayer.mPlayPosition;
-//            this.mUriList = QQVideoPlayer.mUriList;
-//            GSYVideoModel gsyVideoModel = (GSYVideoModel)this.mUriList.get(this.mPlayPosition);
-//            if(!TextUtils.isEmpty(gsyVideoModel.getTitle())) {
-//                this.mTitleTextView.setText(gsyVideoModel.getTitle());
-//            }
-//        }
-//
-//        super.resolveNormalVideoShow(oldF, vp, gsyVideoPlayer);
-//    }
-//
 //    public void onCompletion() {
 //        if(this.mPlayPosition >= this.mUriList.size() - 1) {
 //            super.onCompletion();

@@ -12,6 +12,7 @@ import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.base.list.ListBaseView;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.QQListInfoResult;
+import com.bibabo.event.ExitVideoPlayerEvent;
 import com.bibabo.event.GetVideoInfoEvent;
 import com.bibabo.event.PlayVideoEvent;
 import com.bibabo.event.PlayVideoListEvent;
@@ -280,6 +281,11 @@ public class BabyVideoDetailActivity extends MVPBaseActivity<BabyVideoDetailCont
     protected void onResume() {
         super.onResume();
         isPause = false;
+    }
+
+    @Subscribe
+    public void exitPlayerVideo(ExitVideoPlayerEvent event){
+        finish();
     }
 
     @Override

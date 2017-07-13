@@ -80,7 +80,7 @@ public class JCVideoPlayerStandard extends JCVideoPlayer {
         } else if (currentScreen == SCREEN_LAYOUT_NORMAL
                 || currentScreen == SCREEN_LAYOUT_LIST) {
             fullscreenButton.setImageResource(R.drawable.jc_enlarge);
-            backButton.setVisibility(View.GONE);
+            backButton.setVisibility(View.VISIBLE);
             tinyBackImageView.setVisibility(View.INVISIBLE);
             changeStartButtonSize((int) getResources().getDimension(R.dimen.jc_start_button_w_h_normal));
         } else if (currentScreen == SCREEN_WINDOW_TINY) {

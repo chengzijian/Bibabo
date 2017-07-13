@@ -21,7 +21,9 @@ public class VideoCommonData {
     }
 
     public static void clear() {
-        videoList.clear();
+        if (videoList != null) {
+            videoList.clear();
+        }
     }
 
 }
