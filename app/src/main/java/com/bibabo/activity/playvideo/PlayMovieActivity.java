@@ -10,6 +10,7 @@ import com.bibabo.R;
 import com.bibabo.base.MVPBaseActivity;
 import com.bibabo.entity.CustomVideoModel;
 import com.bibabo.entity.MovieCoverInfo;
+import com.bibabo.event.ExitVideoPlayerEvent;
 import com.bibabo.framework.config.ShowConfig;
 import com.bibabo.framework.utils.LogUtils;
 import com.bibabo.framework.utils.PromptUtils;
@@ -17,6 +18,8 @@ import com.bibabo.framework.utils.StringUtils;
 import com.bibabo.videoplayer.JCVideoPlayer;
 import com.bibabo.widget.VideoPlayer.QQVideoPlayer;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
 import org.jsoup.Jsoup;
 
 import java.util.List;
@@ -27,7 +30,6 @@ import me.yokeyword.fragmentation.anim.DefaultHorizontalAnimator;
 import me.yokeyword.fragmentation.anim.FragmentAnimator;
 
 /**
- *
  * Created by zijian.cheng on 2017/7/5.
  */
 
@@ -40,7 +42,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
         context.startActivity(intent);
     }
 
-//    @BindView(R.id.jc_video)
+    //    @BindView(R.id.jc_video)
 //    JCVideoPlayerStandard mJcVideoPlayerStandard;
     @BindView(R.id.id_video_html)
     EditText mPlayVideoUrl;
@@ -61,6 +63,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        EventBus.getDefault().register(this);
         if (savedInstanceState == null) {
             //loadRootFragment(R.id.fl_container, PlayMovieFragment.newInstance());
         }
@@ -105,9 +108,9 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
     }
 
     @OnClick(R.id.id_analytic_url)
-    public void onClickPlayVideo(){
+    public void onClickPlayVideo() {
         ehost = mPlayVideoUrl.getText().toString();
-        if(StringUtils.isEmpty(ehost)){
+        if (StringUtils.isEmpty(ehost)) {
             PromptUtils.getInstance().showToast("播放地址不能为空");
             return;
         }
@@ -117,6 +120,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
 
     /**
      * 获取影片信息成功
+     *
      * @param result
      */
     @Override
@@ -125,9 +129,9 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
 
         List<String> vids = result.getVideo_ids();
         String vid = null;
-        if(vids.size() > 0){
-            for(String v : vids){
-                if(!StringUtils.isEmpty(v)){
+        if (vids.size() > 0) {
+            for (String v : vids) {
+                if (!StringUtils.isEmpty(v)) {
                     vid = v;
                     break;
                 }
@@ -135,7 +139,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
         }
         //获取getinfo 播放信息
         String url = String.format(ShowConfig.GET_INFO, vid, ShowConfig.GUID, ehost, String.valueOf(System.currentTimeMillis() / 1000));
-        loadLocalUrl(url, new InJavaScriptLocalObj(){
+        loadLocalUrl(url, new InJavaScriptLocalObj() {
             @Override
             @JavascriptInterface
             public void showSource(String html) {
@@ -158,6 +162,7 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
 
     /**
      * 得到下一段视频播放地址成功
+     *
      * @param videoUrl
      */
     @Override
@@ -178,6 +183,17 @@ public class PlayMovieActivity extends MVPBaseActivity<PlayMovieContract.View, P
             return;
         }
         super.onBackPressedSupport();
+    }
+
+    @Subscribe
+    public void exitPlayerVideo(ExitVideoPlayerEvent event) {
+        finish();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        EventBus.getDefault().unregister(this);
     }
 
     @Override
