@@ -14,7 +14,7 @@ public class VideoDetailsInfo implements Serializable {
     private String secTitle;
     private String pic;
     private String typeName;
-    private QQCoverInfoResult.ScoreBean score;
+    private String score;
     private String episodeCurrent;//分页
 
     private String currVideoTitle;
@@ -26,11 +26,11 @@ public class VideoDetailsInfo implements Serializable {
 
     private QQListInfoResult listInfo;
 
-    public QQCoverInfoResult.ScoreBean getScore() {
+    public String getScore() {
         return score;
     }
 
-    public void setScore(QQCoverInfoResult.ScoreBean score) {
+    public void setScore(String score) {
         this.score = score;
     }
 

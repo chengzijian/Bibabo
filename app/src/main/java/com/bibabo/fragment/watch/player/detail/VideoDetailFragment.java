@@ -121,7 +121,7 @@ public class VideoDetailFragment extends MVPBaseFragment<VideoDetailContract.Vie
 
         mMovieTitle.setText(result.getTitle());
         mMovieScore.setText(String.format("%1$s分・%2$s・全%3$s集・%4$s次播放"
-                , result.getScore().getScore()
+                , result.getScore()
                 , result.getTypeName(), "-", "-"));
 
         //设置播放器视频播放列表

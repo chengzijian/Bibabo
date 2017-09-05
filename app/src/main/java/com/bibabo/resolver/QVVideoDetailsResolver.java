@@ -23,8 +23,8 @@ public class QVVideoDetailsResolver<T, F> implements Function<T, Publisher<F>> {
         VideoDetailsInfo result = new VideoDetailsInfo();
         String htmlString = String.valueOf(source);
         String beginStr = "COVER_INFO = ";
-        String endStr = "]}}}";
-        htmlString = htmlString.substring(htmlString.indexOf(beginStr), htmlString.indexOf(endStr) + endStr.length());
+        String endStr = "var VIP_INFO = {";
+        htmlString = htmlString.substring(htmlString.indexOf(beginStr), htmlString.indexOf(endStr));
         String[] infoList = htmlString.split("var ");
         for (String info : infoList) {
             String title = info.substring(0, info.indexOf("=")).trim();
@@ -33,12 +33,12 @@ public class QVVideoDetailsResolver<T, F> implements Function<T, Publisher<F>> {
                 QQCoverInfoResult coverInfoResult = JSONUtils.fromJsonString(info, QQCoverInfoResult.class);
 
                 result.setTitle(coverInfoResult.getTitle());
-                result.setSecTitle(coverInfoResult.getSecTitle());
+                result.setSecTitle(coverInfoResult.getSecond_title());
                 result.setId(coverInfoResult.getId());
-                result.setPic(coverInfoResult.getPic());
+                result.setPic(coverInfoResult.getNew_pic_hz());
                 result.setTypeName(coverInfoResult.getType_name());
                 result.setScore(coverInfoResult.getScore());
-                result.setEpisodeCurrent(coverInfoResult.getEpisodeCurrent());
+                result.setEpisodeCurrent(coverInfoResult.getEpisode_updated());
             } else if(title.equals("COLUMN_INFO")){
                 continue;
             } else if(title.equals("VIDEO_INFO")){
