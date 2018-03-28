@@ -21,7 +21,10 @@ public class StringConverterFactory extends Converter.Factory {
     @Override
     public Converter<ResponseBody, ?> responseBodyConverter(Type type, Annotation[] annotations,
                                                             Retrofit retrofit) {
-        return new StringResponseBodyConverter();
+        if (type == String.class) {
+            return new StringResponseBodyConverter();
+        }
+        return null;
     }
 
     @Override
